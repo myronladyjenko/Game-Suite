@@ -36,19 +36,43 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
 
     @Override
     public boolean isDone() {
-        // Provide implementation
+
+        if (!checkTie()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean checkTie() {
+        String cellValue = "";
+
+        cellValue = super.getCell(1, 1);
+        if (cellValue.equals("_")) {
+            return false;
+        }
+
+        while ((cellValue = super.getNextValue()) != null) {
+            if (cellValue.equals("_")) {
+                return false;
+            }
+        }
         return true;
     }
 
     @Override
     public int getWinner() {
-        if (getPlayerTurn() == 'X') {
-            return 1;
-        } else if (getPlayerTurn() == 'O') {
-            return 2;
+
+        if (isDone()) {
+            if (getPlayerTurn() == 'X') {
+                return 1;
+            } else if (getPlayerTurn() == 'O') {
+                return 2;
+            }
+            return 0;
         }
 
-        return 0;
+        return -1;
     }
 
     @Override

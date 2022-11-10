@@ -6,14 +6,12 @@ public class TicTacToeConsoleView {
     private Scanner scanner;
     private TicTacToeBoard board;
     private TicTacToeGame game;
-    private Player player;
     private int userInputPosition;
 
     public TicTacToeConsoleView() {
         scanner = new Scanner(System.in);
         board = new TicTacToeBoard();
         game = new TicTacToeGame();
-        player = new Player();
     }
 
     /**
@@ -38,7 +36,8 @@ public class TicTacToeConsoleView {
             if (game.takeTurn(1, 1, currTurn)) {
                 game.updatePlayerTurn(game.getPlayerTurn());
             }
-        } while (game.getWinner() == -1);
+        } while (!game.isDone());
+
 
         printString("\nFinal board:");
         printString(board.toString());

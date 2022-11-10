@@ -116,7 +116,7 @@ public abstract class BoardGame {
      * @return String String representation of the next value
      */
     public String getNextValue() {
-        if(!iter.hasNext()){
+        if (!iter.hasNext()) {
             iter = grid.iterator();
             return null;
         }

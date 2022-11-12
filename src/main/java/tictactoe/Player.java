@@ -28,6 +28,13 @@ public class Player implements boardgame.Saveable {
         }
     }
 
+    public char getPreviousPlayerTurn(char currTurn) {
+        if (currTurn == 'X') {
+            return 'O';
+        }
+        return 'X';
+    }
+
     private void setFirstTurn() {
         int max = 2;
         int min = 1;
@@ -41,6 +48,10 @@ public class Player implements boardgame.Saveable {
         }
     }
 
+    public void setCurrentTurn(char currPlayerTurn) {
+        playerTurn = currPlayerTurn;
+    }
+
     @Override
     public String getStringToSave() {
         // TODO Auto-generated method stub
@@ -50,6 +61,9 @@ public class Player implements boardgame.Saveable {
     @Override
     public void loadSavedString(String toLoad) {
         // TODO Auto-generated method stub
-        
+    }
+
+    public String toString() {
+        return "Current player is: " + Character.toString(getTurn());
     }
 }

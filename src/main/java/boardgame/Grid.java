@@ -43,10 +43,9 @@ public class Grid {
      * Empties the grid and sets all positions to a space
      * 
      */
-
-    public  void emptyGrid() {
+    public void emptyGrid() {
             data = new ArrayList<>();
-            for(int i = 0; i < width * height; i++){
+            for(int i = 0; i < width * height; i++) {
                 data.add(" "); //empty grid
             }
     }
@@ -58,8 +57,8 @@ public class Grid {
      * @param val  String representation of the value.
      */
     public void setValue(int across, int down, String val) {
-            int position = (down - 1) * width + (across - 1);
-            data.set(position, val);
+        int position = (down - 1) * width + (across - 1);
+        data.set(position, val);
     }
   
     /** 
@@ -97,15 +96,14 @@ public class Grid {
     public String getStringGrid() {
         String toPrint = "";
  
-        int i=0;
-        for(String c: data){
+        int i = 0;
+        for (String c: data) {
             toPrint = toPrint + " " + c;
             i++;
-            if(i == width){
+            if (i == width) {
                 toPrint = toPrint + "\n";
                 i = 0;
             }
-
         }
         return toPrint;
     }

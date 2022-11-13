@@ -7,6 +7,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import boardgame.Saveable;
+
 /**
  * This class is used as a helper class that is used for File Handling. The purpose of this class is to
  * load from file and save to file. In both cases we are dealing with the string representation of the board, 
@@ -15,16 +17,14 @@ import java.nio.file.Path;
  * @author Myron Ladyjenko
  */
 public class FileHandling {
-    private boolean successfulLoadFromFile;
-    private StringBuilder strToStoreBoard;
+    private static boolean successfulLoadFromFile = false;
+    private static StringBuilder strToStoreBoard = new StringBuilder("");;
     
     /**
-     * This is an empty constructor used to initalize private 
-     * members of this class to 'false' values.
+     * This is an empty constructor
      */
     public FileHandling() {
-        setStatusOfLoadOrSaveFromFile(false);
-        strToStoreBoard = new StringBuilder("");
+
     }
 
     /**
@@ -37,17 +37,18 @@ public class FileHandling {
      *
      * @throws ThrowExceptionFileActionHasFailed throws this exception when file doesn't exists or fialed to open
      */
-    public void loadFile(String fileName) throws ThrowExceptionFileActionHasFailed {
+    public static void loadFile(String fileName, Saveable toLoad) throws ThrowExceptionFileActionHasFailed {
         String oneLine = "";
         BufferedReader myReader;
         Path path = FileSystems.getDefault().getPath(fileName);
         try {
             myReader = Files.newBufferedReader(path);
             while ((oneLine = myReader.readLine()) != null) {
-                strToStoreBoard.append(oneLine);
+                strToStoreBoard.append(oneLine + "\n");
             }
             myReader.close();
-            setStatusOfLoadOrSaveFromFile(true);
+            successfulLoadFromFile = true;
+            toLoad.loadSavedString(strToStoreBoard.toString());
         } catch (Exception e) {
             throw new ThrowExceptionFileActionHasFailed("Provided file name is incorrect or doesn't exist or"
                                                         + " failed to open: " + fileName);
@@ -62,19 +63,19 @@ public class FileHandling {
      * @param stringToWriteToFile The string (string representation of board) that you want to write to the file.
      * @throws ThrowExceptionFileActionHasFailed an exception that occurs when file couldn't open (or get created) 
      */
-    public void saveToFile(String fileName, String stringToWriteToFile) throws ThrowExceptionFileActionHasFailed {
+    public static void saveToFile(String fileName, Saveable toSave) throws ThrowExceptionFileActionHasFailed {
         checkFileExistsOtherwiseCreate(fileName);
 
         Path path = FileSystems.getDefault().getPath(fileName);
         try {
-            Files.writeString(path, stringToWriteToFile);
-            setStatusOfLoadOrSaveFromFile(true);
+            Files.writeString(path, toSave.getStringToSave());
+            successfulLoadFromFile = true;
         } catch(IOException e) {
             throw new ThrowExceptionFileActionHasFailed("Unable to write to the file: " + fileName);
         }
     }
 
-    private void checkFileExistsOtherwiseCreate(String fileName) 
+    private static void checkFileExistsOtherwiseCreate(String fileName) 
                                                 throws ThrowExceptionFileActionHasFailed {
         File file = new File(fileName);
 
@@ -87,17 +88,12 @@ public class FileHandling {
         }
     }
 
-    private void setStatusOfLoadOrSaveFromFile(boolean boolValue) {
-        successfulLoadFromFile = boolValue;
+    public static boolean getLoadFromFileResult() {
+        return successfulLoadFromFile;
     }
 
-    /**
-     * This function returns the status of the load or save from file operation
-     * 
-     * @return The status of the load from file.
-     */
-    public boolean getStatusOfLoadOrSaveFromFile() {
-        return successfulLoadFromFile;
+    public static String getStringBoard() {
+        return strToStoreBoard.toString();
     }
 
     public String toString() {

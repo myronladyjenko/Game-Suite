@@ -1,19 +1,17 @@
 package tictactoe;
 
-// import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import boardgame.ui.PositionAwareButton;
-import game.FileHandling;
 import game.GameUI;
-import game.ThrowExceptionFileActionHasFailed;
 
 public class TicTacToeUIView extends JPanel {
 
@@ -31,10 +29,11 @@ public class TicTacToeUIView extends JPanel {
 
         JLabel startMessageLabel = new JLabel("Welcome to TicTacToe");
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
+        turnLabel.setPreferredSize(new Dimension(100, 50));
+        turnLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
 
         this.add(startMessageLabel, BorderLayout.NORTH);
         this.add(turnLabel, BorderLayout.NORTH);
-        this.add(makeNewGameButton());
         this.add(makeButtonGrid(tall, wide));
     }
 
@@ -42,14 +41,16 @@ public class TicTacToeUIView extends JPanel {
         JPanel panel = new JPanel();
         buttons = new PositionAwareButton[game.getHeight()][game.getWidth()];
         panel.setLayout(new GridLayout(game.getWidth(), game.getHeight()));
+        panel.setPreferredSize(new Dimension(400, 400));
 
         for (int i = 0; i < wide; i++) {
             for (int j = 0; j < tall; j++) { 
                 buttons[i][j] = new PositionAwareButton();
-                buttons[i][j].setAcross(j+1);
-                buttons[i][j].setDown(i+1);
+                buttons[i][j].setFont(new Font("Times New Roman", Font.PLAIN, 40));  
+                buttons[i][j].setAcross(j + 1);
+                buttons[i][j].setDown(i + 1);
                 buttons[i][j].addActionListener(e->{
-                                        enterCharacter(e);
+                                        takeUserInput(e);
                                         checkCurrentGameState(e);
                                         });
                 panel.add(buttons[i][j]);
@@ -59,16 +60,16 @@ public class TicTacToeUIView extends JPanel {
     }
 
     private void checkCurrentGameState(ActionEvent e) {
-        int playerSelection= 0;
+        int playerSelection = 0;
 
         if (game.isDone()) {
-            playerSelection = JOptionPane.showConfirmDialog(null, game.getGameStateMessage(),
-                                                     "Would you like to play again", JOptionPane.YES_NO_OPTION);
-            handleStepsToSave();
+            playerSelection = JOptionPane.showConfirmDialog(null, game.getGameStateMessage() + "." 
+                                                + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
+
             if (playerSelection == JOptionPane.NO_OPTION) {
                 root.start();
             } else {
-                newGame();
+                startNewGame();
             }
         } else {
             if (getTurnUpdate()) {
@@ -78,36 +79,10 @@ public class TicTacToeUIView extends JPanel {
         }
     }
 
-    private void handleStepsToSave() {
-        FileHandling fileHandlerForBoard = new FileHandling();
-        String inputCharacter = JOptionPane.showInputDialog("Would you like to save? Enter y - 'yes' and n - 'no'"); 
-
-        if (inputCharacter.charAt(0) == 'y') {
-            root.saveGameState();
-            try {
-                fileHandlerForBoard.saveToFile(root.getFilePath(), game.getStringToSave());
-            } catch (ThrowExceptionFileActionHasFailed e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Board hasn't been saved");
-        }
-    }
-
-    private JButton makeNewGameButton() {
-        JButton button = new JButton("New TicTacToe game");
-        button.addActionListener(e->newGame());
-        return button;
-    }
-
-    protected void newGame() {
+    protected void startNewGame() {
         game.newGame();
-        updateView();
-    }
-
-    protected void updateView() {
         for (int i = 0; i < game.getHeight(); i++) {
-            for (int j=0; j < game.getWidth(); j++) {  
+            for (int j=0; j < game.getWidth(); j++) {
                 buttons[i][j].setText(game.getCell(buttons[i][j].getAcross(), buttons[i][j].getDown())); 
             }
         }
@@ -117,7 +92,7 @@ public class TicTacToeUIView extends JPanel {
         this.game = controller;
     }
 
-    private void enterCharacter(ActionEvent e) {
+    private void takeUserInput(ActionEvent e) {
         setTurnUpdate(false);
         String inputCharacter = JOptionPane.showInputDialog("Please input a character: 'X' or 'O'"); 
 

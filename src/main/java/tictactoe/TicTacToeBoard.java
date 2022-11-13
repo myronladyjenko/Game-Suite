@@ -28,32 +28,22 @@ public class TicTacToeBoard extends boardgame.Grid {
     }
 
     public void parseStringIntoBoard(String toParse) {
-        int numBoardElements = 0;
-        int numCommas = 0;
-        int counter = 1;
+        int counter = 2;
+        int row = 1;
         int column = 1;
-        for (int i = 1; i <= getHeight(); i++) {
-            while (numCommas + numBoardElements != 5) {
-                if (toParse.charAt(counter) == ',') {
-                    if (numCommas != 2) {
-                        numCommas++;
-                        counter++;
-                    }
+
+        while (row <= getHeight()) {
+            if (toParse.charAt(counter) != '\n') {
+                if (toParse.charAt(counter) != ',') {
+                    setValue(row, column, String.valueOf(toParse.charAt(counter)));
                 } else {
-                    setValue(i, column, String.valueOf(toParse.charAt(counter)));
-                    if (numCommas == 2) {
-                        counter++;
-                    } else {
-                        counter += 2;
-                        numCommas++;
-                    }
+                    column++;
                 }
-                numBoardElements++;
-                column++;
+            } else {
+                row++;
+                column = 1;
             }
-            numCommas = 0;
-            column = 1;
-            numBoardElements = 0;
+            counter++;
         }
     }
 

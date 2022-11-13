@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import numericaltictactoe.NumericalTicTacToeUIView;
@@ -70,11 +71,11 @@ public class GameUI extends JFrame {
         menu.add(menuForSavingGames);
         menuBar.add(menu);
 
-        itemNumericalTicTacToeGameSave.addActionListener(e->saveGameState());
-        itemTicaTacToeGameSave.addActionListener(e->saveGameState());
+        itemNumericalTicTacToeGameSave.addActionListener(e->selectLocationToSave());
+        itemTicaTacToeGameSave.addActionListener(e->selectLocationToSave());
     }
 
-    public void saveGameState() {
+    private void selectLocationToSave() {
         chooseFile = new JFileChooser();
         chooseFile.setDialogTitle("Please enter a file name");
 
@@ -82,6 +83,23 @@ public class GameUI extends JFrame {
         if (userSelectedFile == JFileChooser.APPROVE_OPTION) {
             File fileToSave = chooseFile.getSelectedFile();
             setFilePath(fileToSave.getAbsolutePath());
+        }
+    }
+
+     public void handleStepsToSave() {
+        String inputCharacter = JOptionPane.showInputDialog("Would you like to save? Enter y - 'yes' and n - 'no'"); 
+
+        if (inputCharacter.charAt(0) == 'y') {
+            selectLocationToSave();
+            /*
+            try {
+                // game.FileHandling.saveToFile(getFilePath(), game);
+
+            } catch (ThrowExceptionFileActionHasFailed e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            } */
+        } else {
+            JOptionPane.showMessageDialog(null, "Board hasn't been saved");
         }
     }
 
@@ -94,13 +112,13 @@ public class GameUI extends JFrame {
     }
 
     private JButton makeTicTacToeButton() {
-        JButton button = new JButton("Play TicTacToe");
+        JButton button = new JButton("Start new TicTacToe game");
         button.addActionListener(e->ticTacToe());
         return button;
     }
 
     private JButton makeNumericalTicTacToeButton() {
-        JButton button = new JButton("Play Numerical TicTacToe");
+        JButton button = new JButton("Start new Numerical TicTacToe");
         button.addActionListener(e->numericalTicTacToe());
         return button;
     }

@@ -13,7 +13,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
 
     public void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
                                                                  ThrowExceptionTheGameHasEnded {
-        if (stringBoard.length() < 7 || stringBoard.length() > 16) {
+        if (stringBoard.length() < 11 || stringBoard.length() > 20) {
             throw new ThrowExceptionWrongBoardFormat("Length of the board read from"
                                                      + " file doesn't match the expected one. Please restart.\n");
         }
@@ -53,6 +53,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
 
     private boolean checkForUnexpectedSymbols(String stringBoard) {
         String sBoard = stringBoard.replaceAll(",", "");
+        sBoard = sBoard.replaceAll("\n", "");
         for (int i = 0; i < sBoard.length(); i++) {
             if (sBoard.charAt(i) != 'O' && sBoard.charAt(i) != 'X') {
                 return true;
@@ -65,11 +66,11 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         int countOnes = 0;
         int countTwos = 0;
 
-        for (int i = 0; i < super.getHeight() * super.getWidth(); i++) {
-            if (sBoard.charAt(i) == '1') {
+        for (int i = 1; i < sBoard.length(); i++) {
+            if (sBoard.charAt(i) == 'O') {
                 countOnes++;
             }
-            if (sBoard.charAt(i) == '2') {
+            if (sBoard.charAt(i) == 'X') {
                 countTwos++;
             }
         }
@@ -153,14 +154,14 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         for (int i = 1; i <= super.getHeight(); i++) {
             if (!super.getCell(i, i).equals(" ") && super.getCell(1, i).equals(super.getCell(2, i)) 
                 && super.getCell(2, i).equals(super.getCell(3, i))) {
-                setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
+                setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
                 return true;
             }
         }
         for (int i = 1; i <= super.getWidth(); i++) {
             if (!super.getCell(i, i).equals(" ") && super.getCell(i, 1).equals(super.getCell(i, 2)) 
                 && super.getCell(i, 2).equals(super.getCell(i, 3))) {
-                setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
+                setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
                 return true;
             }
         }
@@ -179,12 +180,12 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     private boolean checkDiagonalForWin() {
         if (!super.getCell(1, 1).equals(" ") && super.getCell(1, 1).equals(super.getCell(2, 2)) 
             && super.getCell(2, 2).equals(super.getCell(3, 3))) {
-            setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
+            setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
             return true;
         }
         if (!super.getCell(2, 2).equals(" ") && super.getCell(3, 1).equals(super.getCell(2, 2)) 
             && super.getCell(2, 2).equals(super.getCell(1, 3))) {
-            setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
+            setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
             return true;
         }
 

@@ -1,16 +1,30 @@
 package tictactoe;
 
+/**
+ * This class is used to handle the board game for the game TicTacToe.
+ * It allows to make turns on board and determines the players playing the game. 
+ * 
+ * @author Myron Ladyjenko
+ */
 public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Saveable {
     private Player player;
     private String winnerMessage;
     private boolean allowedMove;
 
+    // Creating a new TicTacToeGame object.
     public TicTacToeGame() {
         super(3, 3);
         setGrid(new TicTacToeBoard());
         player = new Player();
     }
 
+    /**
+     * It checks if the board read from the file is valid
+     * 
+     * @param stringBoard the string representation of the board read from the file
+     * @throws ThrowExceptionWrongBoardFormat an exception that occurs when the board loaded is in the wring format
+     * @throws ThrowExceptionTheGameHasEnded an exception that occurs when the game has ended
+     */
     public void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
                                                                  ThrowExceptionTheGameHasEnded {
         if (stringBoard.length() < 11 || stringBoard.length() > 20) {
@@ -87,6 +101,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
+    // Creating a string that represents the board and the player turn.
     public String getStringToSave() {
         String stringBoardForFile = "";
         stringBoardForFile = stringBoardForFile + player.getPreviousPlayerTurn(player.getTurn()) + "\n";
@@ -113,6 +128,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
+    // Loading the saved string into the board.
     public void loadSavedString(String toLoad) {
         player.updateTurn(toLoad.charAt(0));
         player.setCurrentTurn(player.getTurn());
@@ -120,6 +136,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
+    // Checking if the move is allowed and if it is, it is setting the value on the board.
     public boolean takeTurn(int across, int down, String input) {
         // Check Properly
         checkBoardMove(across, down);
@@ -144,12 +161,14 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
+    // A method that is required to be implemented by the BoardGame class. It is not used in this game.
     public boolean takeTurn(int across, int down, int input) {
         setValue(across, down, input);
         return false;
     }
 
     @Override
+    // Checking if the game is done and if it is, it is checking who the winner is.
     public boolean isDone() {
         for (int i = 1; i <= super.getHeight(); i++) {
             if (!super.getCell(i, i).equals(" ") && super.getCell(1, i).equals(super.getCell(2, i)) 
@@ -253,6 +272,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
+    // Checking if the game is done and if it is, it is checking who the winner is.
     public int getWinner() {
         if (isDone()) {
             if (getPlayerTurn() == 'X') {
@@ -279,6 +299,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
+    // Returning the winner message.
     public String getGameStateMessage() {
         return winnerMessage;
     }

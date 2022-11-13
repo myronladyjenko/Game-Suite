@@ -1,5 +1,12 @@
 package tictactoe;
 
+/**
+ * This class represents a player for the TicTacToe game. The purpose of this class is 
+ * to know information about current player's turn. The class provides methods to access information
+ * about player and switch between players.
+ * 
+ * @author Myron Ladyjenko
+ */
 public class Player implements boardgame.Saveable {
     private char playerTurn;
 

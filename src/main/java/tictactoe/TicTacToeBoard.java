@@ -1,11 +1,18 @@
 package tictactoe;
 
+/**
+ * This class is used to control the build the board for the games (from grid)
+ * 
+ * @author Myron Ladyjenko
+ */
 public class TicTacToeBoard extends boardgame.Grid {
 
+    // Calling the constructor of the super class, which is Grid.
     public TicTacToeBoard() {
         super(3, 3);
     }
 
+    // Overriding the toString method of the super class, Grid.
     @Override
     public String toString() {
         StringBuilder strBoardBuilder = new StringBuilder();
@@ -27,6 +34,11 @@ public class TicTacToeBoard extends boardgame.Grid {
         return strBoardBuilder.toString();
     }
 
+    /**
+     * It takes a string, and parses it into the board
+     * 
+     * @param toParse The string to parse into the board.
+     */
     public void parseStringIntoBoard(String toParse) {
         int counter = 2;
         int row = 1;

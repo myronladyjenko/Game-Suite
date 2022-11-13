@@ -5,6 +5,13 @@ import java.util.Scanner;
 import game.ThrowExceptionFileActionHasFailed;
 import game.FileHandling;
 
+/**
+ * This class is used to run a text-based version of Tictactoe.
+ * It is used to facilitate the process of playing.. It handles the input and 
+ * proper structure of the game.
+ * 
+ * @author Myron Ladyjenko
+ */
 public class TicTacToeConsoleView {
     private Scanner scanner;
     private TicTacToeGame game;
@@ -22,6 +29,7 @@ public class TicTacToeConsoleView {
     private final int fileNameLoad = 3;
     private final int fileNameSave = 4;
 
+    // Creating a new scanner object and setting the skipMenuOption to false.
     public TicTacToeConsoleView() {
         scanner = new Scanner(System.in);
         setSkipMenuOption(false);
@@ -110,6 +118,9 @@ public class TicTacToeConsoleView {
     /**
      * This method is a main method that provides a menu-driven TicTacToe game in the console.
      * It combines methods from other classes to produce and allow the user to play TicTacToe game
+     */
+    /**
+     * The function is a while loop that keeps running until the user chooses to exit the game
      */
     public void playGame() {
         printString("\nWELCOME TO THE TicTacToe GAME!\n");

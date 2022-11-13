@@ -15,6 +15,11 @@ import game.FileHandling;
 import game.GameUI;
 import game.ThrowExceptionFileActionHasFailed;
 
+/**
+ * This class is used to create a UI version of TicTacToe
+ * 
+ * @author Myron Ladyjenko
+ */
 public class TicTacToeUIView extends JPanel {
 
     private JLabel turnLabel;
@@ -79,7 +84,7 @@ public class TicTacToeUIView extends JPanel {
                                                 + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
 
             if (playerSelection == JOptionPane.NO_OPTION) {
-                root.start();
+                root.startGame();
             } else {
                 startNewGame();
             }

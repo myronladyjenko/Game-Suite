@@ -16,6 +16,11 @@ import tictactoe.TicTacToeUIView;
 import java.awt.BorderLayout;
 import java.io.File;
 
+/**
+ * This class creates the window for playing the games from GUI
+ * 
+ * @author Myron Ladyjenko
+ */
 public class GameUI extends JFrame {
 
     private final int widthOfFrame = 600;
@@ -29,6 +34,7 @@ public class GameUI extends JFrame {
     private JMenu menuForLoadingGames;
     private JMenu menuForSavingGames;
 
+    // The constructor of the class. It is called when an object of the class is created.
     public GameUI(String gameTitle) {
         super(gameTitle);
         this.setSize(widthOfFrame, lengthOfFrame);
@@ -41,10 +47,14 @@ public class GameUI extends JFrame {
         
         this.add(gameContainer, BorderLayout.CENTER);
         this.add(makeButtonPanel(),BorderLayout.EAST);
-        start();
+        startGame();
     }
 
-    public void start() {
+    /**
+     * It removes all the components from the gameContainer, adds a new component to it, and then
+     * repaints and revalidates the gameContainer
+     */
+    public void startGame() {
         gameContainer.removeAll();
         gameContainer.add(startupMessage());
         getContentPane().repaint();
@@ -52,6 +62,9 @@ public class GameUI extends JFrame {
         pack();
     }
 
+    /**
+     * It creates a menu bar with two menus, one for saving games and one for loading games
+     */
     public void makeMenu() {
         menuBar = new JMenuBar();
         JMenu menu = new JMenu("File Actions");
@@ -73,6 +86,11 @@ public class GameUI extends JFrame {
         menuBar.add(menu);
     }
 
+    /**
+     * This function is used to select a file from the user's computer
+     * 
+     * @param choice 1 for saving a file, 2 for opening a file
+     */
     public void selectLocationOfTheFile(int choice) {
         chooseFile = new JFileChooser();
         int userSelectedFile = 0;
@@ -107,6 +125,7 @@ public class GameUI extends JFrame {
         return button;
     }
 
+
     private JButton makeNumericalTicTacToeButton() {
         JButton button = new JButton("Start new Numerical TicTacToe");
         button.addActionListener(e->numericalTicTacToe());
@@ -139,18 +158,39 @@ public class GameUI extends JFrame {
         fileLocation = filePath;
     }
 
+    /**
+     * This function returns the file path of the file that is being read
+     * 
+     * @return The file path of the file.
+     */
     public String getFilePath() {
         return fileLocation;
     }
 
+    /**
+     * This function returns the JMenuItem at the specified position in the menuForSavingGames JMenu.
+     * 
+     * @param position The position of the menu item in the menu.
+     * @return The JMenuItem at the specified position.
+     */
     public JMenuItem getJMenuItemForSave(int position) {
         return menuForSavingGames.getItem(position);
     }
 
+    /**
+     * This function returns the JMenuItem at the specified position in the menuForLoadingGames JMenu.
+     * 
+     * @param position The position of the menu item in the menu.
+     * @return The JMenuItem at the specified position.
+     */
     public JMenuItem getJMenuItemForLoad(int position) {
         return menuForLoadingGames.getItem(position);
     }
 
+
+    /**
+     * The main function is the entry point of the program
+     */
     public static void main(String[] args) {
         GameUI ticTacToGameUI = new GameUI("TicTactoe Games");
         ticTacToGameUI.setVisible(true);

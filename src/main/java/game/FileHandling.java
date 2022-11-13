@@ -19,22 +19,14 @@ import boardgame.Saveable;
 public class FileHandling {
     private static boolean successfulLoadFromFile = false;
     private static StringBuilder strToStoreBoard = new StringBuilder("");;
-    
-    /**
-     * This is an empty constructor
-     */
-    public FileHandling() {
-
-    }
 
     /**
-     * It takes a file name and a StringBuilder object as parameters, and it reads the file line by
-     * line and appends each line to the StringBuilder object
+     * The function takes a file name and a Saveable object as parameters. It reads the file line by
+     * line and stores the lines in a StringBuilder object. It then calls the loadSavedString() method
+     * of the Saveable object and passes the StringBuilder object as a parameter
      * 
-     * @param fileName The name of the file to be loaded.
-     * @param strToStoreBoard is a StringBuilder object that will store the contents of the file.
-     * It will sotre the string representation of the board (read from file).
-     *
+     * @param fileName the name of the file to load from
+     * @param toLoad the object that will be loaded from the file
      * @throws ThrowExceptionFileActionHasFailed throws this exception when file doesn't exists or fialed to open
      */
     public static void loadFile(String fileName, Saveable toLoad) throws ThrowExceptionFileActionHasFailed {
@@ -57,12 +49,11 @@ public class FileHandling {
     }
 
     /**
-     * This function takes a file name and a string to write to the file, and writes the string to the
-     * file.
+     * Check if the file exists, if not create it, then write the string to the file.
      * 
-     * @param fileName The name of the file to write to.
-     * @param stringToWriteToFile The string (string representation of board) that you want to write to the file.
-     * @throws ThrowExceptionFileActionHasFailed an exception that occurs when file couldn't open (or get created) 
+     * @param fileName The name of the file to save to.
+     * @param toSave The object that is to be saved to the file.
+     * @throws ThrowExceptionFileActionHasFailed an exception that occurs when file couldn't open (or get created)
      */
     public static void saveToFile(String fileName, Saveable toSave) throws ThrowExceptionFileActionHasFailed {
         checkFileExistsOtherwiseCreate(fileName);
@@ -89,14 +80,29 @@ public class FileHandling {
         }
     }
 
+    /**
+     * This function returns the value of the boolean variable successfulLoadFromFile
+     * 
+     * @return The boolean value of successfulLoadFromFile.
+     */
     public static boolean getLoadFromFileResult() {
         return successfulLoadFromFile;
     }
 
+    /**
+     * It returns the string representation of the board
+     * 
+     * @return The string representation of the board.
+     */
     public static String getStringBoard() {
         return strToStoreBoard.toString();
     }
 
+    /**
+     * The function returns a string representation of the board
+     * 
+     * @return The string representation of the board.
+     */
     public String toString() {
         return strToStoreBoard.toString();
     }

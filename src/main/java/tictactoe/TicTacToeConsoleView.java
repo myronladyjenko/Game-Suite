@@ -35,6 +35,42 @@ public class TicTacToeConsoleView {
         setSkipMenuOption(false);
     }
 
+    /**
+     * This method is a main method that provides a menu-driven TicTacToe game in the console.
+     * It combines methods from other classes to produce and allow the user to play TicTacToe game
+     * The function uses a while loop that keeps running until the user chooses to exit the game
+     */
+    public void playGame() {
+        printString("\nWELCOME TO THE TicTacToe GAME!\n");
+        while (getSkipMenuOption() || chooseTheMenuOptionAndInitialize() != 3) {
+            printString(game.getGridWrapper().toString());
+            printString("Turn - " + game.getPlayerTurn() + "\n");
+            getUserInput("Please enter the position from 1 to 9 (0 to exit to the main menu): ", 
+                                         getThisTypeInput(integerInputBoardPosition));
+            int[] coordinates = new int[2];
+            if (!parseUserInput(coordinates)) {
+                continue;
+            }
+            performTurn(coordinates);
+            if (checkIfGameHasFinished()) {
+                continue;
+            }
+            game.updatePlayerTurn(game.getPlayerTurn());
+
+            saveFileManuallyUserPrompts();
+            if (getFileProperlySaved()) {
+                if (promptUser("Would you like to continue?\n" + "Please enter 'y' or 'n': ") == 'y') {
+                    setSkipMenuOption(true);
+                } else {
+                    setSkipMenuOption(false);
+                }
+            } else {
+                setSkipMenuOption(true);
+            }
+        }
+        scanner.close();
+    }
+
     private int chooseTheMenuOptionAndInitialize() {
         displayStartGameMenu();
 
@@ -113,44 +149,6 @@ public class TicTacToeConsoleView {
     private char promptUser(String questionToAsk) {        
         getUserInput(questionToAsk, getThisTypeInput(characterInput));
         return getCharacterInput();
-    }
-
-    /**
-     * This method is a main method that provides a menu-driven TicTacToe game in the console.
-     * It combines methods from other classes to produce and allow the user to play TicTacToe game
-     */
-    /**
-     * The function is a while loop that keeps running until the user chooses to exit the game
-     */
-    public void playGame() {
-        printString("\nWELCOME TO THE TicTacToe GAME!\n");
-        while (getSkipMenuOption() || chooseTheMenuOptionAndInitialize() != 3) {
-            printString(game.getGridWrapper().toString());
-            printString("Turn - " + game.getPlayerTurn() + "\n");
-            getUserInput("Please enter the position from 1 to 9 (0 to exit to the main menu): ", 
-                                         getThisTypeInput(integerInputBoardPosition));
-            int[] coordinates = new int[2];
-            if (!parseUserInput(coordinates)) {
-                continue;
-            }
-            performTurn(coordinates);
-            if (checkIfGameHasFinished()) {
-                continue;
-            }
-            game.updatePlayerTurn(game.getPlayerTurn());
-
-            saveFileManuallyUserPrompts();
-            if (getFileProperlySaved()) {
-                if (promptUser("Would you like to continue?\n" + "Please enter 'y' or 'n': ") == 'y') {
-                    setSkipMenuOption(true);
-                } else {
-                    setSkipMenuOption(false);
-                }
-            } else {
-                setSkipMenuOption(true);
-            }
-        }
-        scanner.close();
     }
 
     private void saveFileManuallyUserPrompts() {

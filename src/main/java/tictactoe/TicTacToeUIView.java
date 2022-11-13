@@ -11,7 +11,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import boardgame.ui.PositionAwareButton;
+import game.FileHandling;
 import game.GameUI;
+import game.ThrowExceptionFileActionHasFailed;
 
 public class TicTacToeUIView extends JPanel {
 
@@ -35,6 +37,16 @@ public class TicTacToeUIView extends JPanel {
         this.add(startMessageLabel, BorderLayout.NORTH);
         this.add(turnLabel, BorderLayout.NORTH);
         this.add(makeButtonGrid(tall, wide));
+
+        setActionsForMenuItems();
+    }
+
+    private void setActionsForMenuItems() {
+        root.getJMenuItemForSave(0).addActionListener(e->saveBoard());
+        root.getJMenuItemForSave(1).addActionListener(e->saveBoard());
+
+        root.getJMenuItemForLoad(0).addActionListener(e->loadBoard());
+        root.getJMenuItemForLoad(1).addActionListener(e->loadBoard());
     }
 
     private JPanel makeButtonGrid(int tall, int wide) {
@@ -75,6 +87,47 @@ public class TicTacToeUIView extends JPanel {
             if (getTurnUpdate()) {
                 game.updatePlayerTurn(game.getPlayerTurn());
                 turnLabel.setText("Turn - " + game.getPlayerTurn() + "\n");
+            }
+        }
+    }
+
+    private void loadBoard() {
+        String inputCharacter = JOptionPane.showInputDialog("Would you like to load file? Enter y- 'yes' and n - 'no'");
+
+        if (inputCharacter.charAt(0) == 'y') {
+            root.selectLocationOfTheFile(0);
+        
+            try {
+                FileHandling.loadFile(root.getFilePath(), game);
+                startLoadedGame();
+            } catch (ThrowExceptionFileActionHasFailed e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Board hasn't been loaded");
+        }
+    }
+
+    private void saveBoard() {
+        String inputCharacter = JOptionPane.showInputDialog("Would you like to save? Enter y - 'yes' and n - 'no'"); 
+
+        if (inputCharacter.charAt(0) == 'y') {
+            root.selectLocationOfTheFile(1);
+        
+            try {
+                FileHandling.saveToFile(root.getFilePath(), game);
+            } catch (ThrowExceptionFileActionHasFailed e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Board hasn't been saved");
+        }
+    }
+
+    protected void startLoadedGame() {
+        for (int i = 0; i < game.getHeight(); i++) {
+            for (int j=0; j < game.getWidth(); j++) {
+                buttons[i][j].setText(game.getCell(buttons[i][j].getAcross(), buttons[i][j].getDown())); 
             }
         }
     }

@@ -48,6 +48,7 @@ public class FileHandling {
             }
             myReader.close();
             successfulLoadFromFile = true;
+            System.out.println(strToStoreBoard.toString());
             toLoad.loadSavedString(strToStoreBoard.toString());
         } catch (Exception e) {
             throw new ThrowExceptionFileActionHasFailed("Provided file name is incorrect or doesn't exist or"

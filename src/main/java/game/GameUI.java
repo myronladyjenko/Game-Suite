@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import numericaltictactoe.NumericalTicTacToeUIView;
@@ -27,6 +26,8 @@ public class GameUI extends JFrame {
     private JMenuBar menuBar;
     private String fileLocation;
     private JPanel buttonPanel;
+    private JMenu menuForLoadingGames;
+    private JMenu menuForSavingGames;
 
     public GameUI(String gameTitle) {
         super(gameTitle);
@@ -53,9 +54,9 @@ public class GameUI extends JFrame {
 
     public void makeMenu() {
         menuBar = new JMenuBar();
-        JMenu menu = new JMenu("File");
-        JMenu menuForSavingGames = new JMenu("Save game");
-        JMenu menuForLoadingGames = new JMenu("Load game");
+        JMenu menu = new JMenu("File Actions");
+        menuForSavingGames = new JMenu("Save game");
+        menuForLoadingGames = new JMenu("Load game");
 
         JMenuItem itemTicaTacToeGameSave = new JMenuItem("TicTacToe");
         JMenuItem itemNumericalTicTacToeGameSave = new JMenuItem("Numerical TicTacToe");
@@ -70,36 +71,25 @@ public class GameUI extends JFrame {
         menu.add(menuForLoadingGames);
         menu.add(menuForSavingGames);
         menuBar.add(menu);
-
-        itemNumericalTicTacToeGameSave.addActionListener(e->selectLocationToSave());
-        itemTicaTacToeGameSave.addActionListener(e->selectLocationToSave());
     }
 
-    private void selectLocationToSave() {
+    public void selectLocationOfTheFile(int choice) {
         chooseFile = new JFileChooser();
-        chooseFile.setDialogTitle("Please enter a file name");
+        int userSelectedFile = 0;
 
-        int userSelectedFile = chooseFile.showSaveDialog(this);
-        if (userSelectedFile == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = chooseFile.getSelectedFile();
-            setFilePath(fileToSave.getAbsolutePath());
-        }
-    }
+        if (choice == 1) {
+            chooseFile.setDialogTitle("Please enter a file name");
+            userSelectedFile = chooseFile.showSaveDialog(this);
 
-     public void handleStepsToSave() {
-        String inputCharacter = JOptionPane.showInputDialog("Would you like to save? Enter y - 'yes' and n - 'no'"); 
-
-        if (inputCharacter.charAt(0) == 'y') {
-            selectLocationToSave();
-            /*
-            try {
-                // game.FileHandling.saveToFile(getFilePath(), game);
-
-            } catch (ThrowExceptionFileActionHasFailed e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            } */
+            if (userSelectedFile == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = chooseFile.getSelectedFile();
+                setFilePath(fileToSave.getAbsolutePath());
+            }
         } else {
-            JOptionPane.showMessageDialog(null, "Board hasn't been saved");
+            chooseFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            userSelectedFile = chooseFile.showOpenDialog(this);
+            System.out.println(chooseFile.getSelectedFile().getAbsolutePath());
+            setFilePath(chooseFile.getSelectedFile().getAbsolutePath());
         }
     }
 
@@ -151,6 +141,14 @@ public class GameUI extends JFrame {
 
     public String getFilePath() {
         return fileLocation;
+    }
+
+    public JMenuItem getJMenuItemForSave(int position) {
+        return menuForSavingGames.getItem(position);
+    }
+
+    public JMenuItem getJMenuItemForLoad(int position) {
+        return menuForLoadingGames.getItem(position);
     }
 
     public static void main(String[] args) {

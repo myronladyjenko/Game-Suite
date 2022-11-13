@@ -154,14 +154,14 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         for (int i = 1; i <= super.getHeight(); i++) {
             if (!super.getCell(i, i).equals(" ") && super.getCell(1, i).equals(super.getCell(2, i)) 
                 && super.getCell(2, i).equals(super.getCell(3, i))) {
-                setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
+                setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
                 return true;
             }
         }
         for (int i = 1; i <= super.getWidth(); i++) {
             if (!super.getCell(i, i).equals(" ") && super.getCell(i, 1).equals(super.getCell(i, 2)) 
                 && super.getCell(i, 2).equals(super.getCell(i, 3))) {
-                setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
+                setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
                 return true;
             }
         }
@@ -180,12 +180,12 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     private boolean checkDiagonalForWin() {
         if (!super.getCell(1, 1).equals(" ") && super.getCell(1, 1).equals(super.getCell(2, 2)) 
             && super.getCell(2, 2).equals(super.getCell(3, 3))) {
-            setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
+            setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
             return true;
         }
         if (!super.getCell(2, 2).equals(" ") && super.getCell(3, 1).equals(super.getCell(2, 2)) 
             && super.getCell(2, 2).equals(super.getCell(1, 3))) {
-            setGameStateMessage("Congratulations to " + player.getPreviousPlayerTurn(getPlayerTurn()) + " player");
+            setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
             return true;
         }
 

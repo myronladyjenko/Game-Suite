@@ -122,11 +122,11 @@ public class TicTacToeConsoleView {
             if (!parseUserInput(coordinates)) {
                 continue;
             }
-
             performTurn(coordinates);
             if (checkIfGameHasFinished()) {
                 continue;
             }
+            game.updatePlayerTurn(game.getPlayerTurn());
 
             saveFileManuallyUserPrompts();
             if (getFileProperlySaved()) {
@@ -194,9 +194,7 @@ public class TicTacToeConsoleView {
     private void performTurn(int[] coordinates) {
         String currTurn = String.valueOf(game.getPlayerTurn());
         try {
-            if (game.takeTurn(coordinates[0], coordinates[1], currTurn)) {
-                game.updatePlayerTurn(game.getPlayerTurn());
-            }
+            game.takeTurn(coordinates[0], coordinates[1], currTurn);
         } catch (RuntimeException e) {
             printString(e.getMessage());
         }

@@ -1,5 +1,7 @@
 package tictactoe;
 
+import game.Player;
+
 /**
  * This class is used to handle the board game for the game TicTacToe.
  * It allows to make turns on board and determines the players playing the game. 

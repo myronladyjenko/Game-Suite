@@ -122,8 +122,24 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     public boolean takeTurn(int across, int down, String input) {
         // Check Properly
         checkBoardMove(across, down);
+        checkIfCorrectCharacter(input);
+        checkIfCorrectTurn(input);
+
         setValue(across, down, input);
         return true;
+    }
+
+    private void checkIfCorrectCharacter(String input) {
+        if (input == null || input.length() != 1 || input.length() == 0 
+            || (input.charAt(0) != 'X' && input.charAt(0) != 'O')) {
+            throw new RuntimeException("Input is invalid. Please enter 'X' or 'O'");
+        }
+    }
+
+    private void checkIfCorrectTurn(String input) {
+        if (input.charAt(0) != getPlayerTurn()) {
+            throw new RuntimeException("It's turn : " + getPlayerTurn() + ". Please wait");
+        }
     }
 
     @Override

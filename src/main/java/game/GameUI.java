@@ -2,27 +2,30 @@ package game;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import numericaltictactoe.NumericalTicTacToeUIView;
 import tictactoe.TicTacToeUIView;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
+import java.io.File;
 
 public class GameUI extends JFrame {
 
     private final int widthOfFrame = 600;
     private final int lengthOfFrame = 500; 
 
+    private JFileChooser chooseFile;
     private JPanel gameContainer;
-    private JLabel messageLabel;
     private JMenuBar menuBar;
+    private String fileLocation;
+    private JPanel buttonPanel;
 
     public GameUI(String gameTitle) {
         super(gameTitle);
@@ -30,71 +33,13 @@ public class GameUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         makeMenu();
-        //setJMenuBar(menuBar);
-        //gameContainer = new JPanel();
-
-        Container contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
-        contentPane.add(new JLabel("Border Layout on contentPane"));
-
-        //setLayout(new BorderLayout());
-
-        // make a new label to store messages
+        setJMenuBar(menuBar);
+        gameContainer = new JPanel();
+        setLayout(new BorderLayout());
         
-        //add(gameContainer, BorderLayout.CENTER);
-        //add(makeButtonPanel(),BorderLayout.EAST);
-        //start();
-
-    }
-
-    private JPanel makeButtonPanel(){
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.add(makeKakuroButton());
-        buttonPanel.add(makeSecondGameButton());
-        return buttonPanel;
-    }
-
-    private JButton makeKakuroButton(){
-        JButton button = new JButton("PlayKakuro");
-        button.addActionListener(e->kakuro());
-        return button;
-    }
-
-    private JButton makeSecondGameButton(){
-        JButton button = new JButton("Play Other Game");
-        button.addActionListener(e->secondGame());
-        return button;
-    }
-
-    protected void kakuro() {
-        gameContainer.removeAll();
-        gameContainer.add(new TicTacToeUIView(3,3,this));
-        getContentPane().repaint();
-        getContentPane().revalidate();
-        pack();
-    }
-
-    protected void secondGame() {
-        gameContainer.removeAll();
-        gameContainer.add(startupMessage());
-        getContentPane().repaint();
-        getContentPane().revalidate();
-        pack();
-        JOptionPane.showMessageDialog(null,"Judi didn't make a second game"); 
-    }
-
-    public void makeMenu() {
-        menuBar = new JMenuBar();
-        JMenu menu = new JMenu("A submenu");
-        JMenuItem item = new JMenuItem("an item (e.g. save)");
-        menu.add(item);
-        menuBar.add(menu);
-        item.addActionListener(e->saveSomething());
-    }
-
-    protected void saveSomething() {
-        JOptionPane.showMessageDialog(null,"This should prompt for save files"); 
+        this.add(gameContainer, BorderLayout.CENTER);
+        this.add(makeButtonPanel(),BorderLayout.EAST);
+        start();
     }
 
     public void start() {
@@ -105,10 +50,89 @@ public class GameUI extends JFrame {
         pack();
     }
 
-    private JPanel startupMessage(){
+    public void makeMenu() {
+        menuBar = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        JMenu menuForSavingGames = new JMenu("Save game");
+        JMenu menuForLoadingGames = new JMenu("Load game");
+
+        JMenuItem itemTicaTacToeGameSave = new JMenuItem("TicTacToe");
+        JMenuItem itemNumericalTicTacToeGameSave = new JMenuItem("Numerical TicTacToe");
+        JMenuItem itemTicaTacToeGameLoad = new JMenuItem("TicTacToe");
+        JMenuItem itemNumericalTicTacToeGameLoad = new JMenuItem("Numerical TicTacToe");
+
+        menuForLoadingGames.add(itemNumericalTicTacToeGameLoad);
+        menuForLoadingGames.add(itemTicaTacToeGameLoad);
+        menuForSavingGames.add(itemNumericalTicTacToeGameSave);
+        menuForSavingGames.add(itemTicaTacToeGameSave);
+
+        menu.add(menuForLoadingGames);
+        menu.add(menuForSavingGames);
+        menuBar.add(menu);
+
+        itemNumericalTicTacToeGameSave.addActionListener(e->saveGameState());
+        itemTicaTacToeGameSave.addActionListener(e->saveGameState());
+    }
+
+    public void saveGameState() {
+        chooseFile = new JFileChooser();
+        chooseFile.setDialogTitle("Please enter a file name");
+
+        int userSelectedFile = chooseFile.showSaveDialog(this);
+        if (userSelectedFile == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = chooseFile.getSelectedFile();
+            setFilePath(fileToSave.getAbsolutePath());
+        }
+    }
+
+    private JPanel makeButtonPanel() {
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.add(makeTicTacToeButton());
+        buttonPanel.add(makeNumericalTicTacToeButton());
+        return buttonPanel;
+    }
+
+    private JButton makeTicTacToeButton() {
+        JButton button = new JButton("Play TicTacToe");
+        button.addActionListener(e->ticTacToe());
+        return button;
+    }
+
+    private JButton makeNumericalTicTacToeButton() {
+        JButton button = new JButton("Play Numerical TicTacToe");
+        button.addActionListener(e->numericalTicTacToe());
+        return button;
+    }
+
+    protected void ticTacToe() {
+        gameContainer.removeAll();
+        gameContainer.add(new TicTacToeUIView(3,3,this));
+        getContentPane().repaint();
+        getContentPane().revalidate();
+        pack();
+    }
+
+    protected void numericalTicTacToe() {
+        gameContainer.removeAll();
+        gameContainer.add(new NumericalTicTacToeUIView(3, 3, this));
+        getContentPane().repaint();
+        getContentPane().revalidate();
+        pack();
+    }
+
+    private JPanel startupMessage() {
         JPanel temp = new JPanel();
         temp.add(new JLabel("Welcome to the Myron's Application.\nIt's time to have some fun!"));
         return temp;
+    }
+
+    private void setFilePath(String filePath) {
+        fileLocation = filePath;
+    }
+
+    public String getFilePath() {
+        return fileLocation;
     }
 
     public static void main(String[] args) {

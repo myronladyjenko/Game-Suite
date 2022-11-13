@@ -97,7 +97,7 @@ public class TicTacToeConsoleView {
             getUserInput("Please enter a name of the file to save to: ", fileNameSave);
         } else {
             try {
-                boardFileHandle.saveToFile(getFileNameInput(), game.getStringToSave());
+                boardFileHandle.saveToFile("assets/" + getFileNameInput(), game.getStringToSave());
             } catch (ThrowExceptionFileActionHasFailed wrongFileEx) {
                 printString(wrongFileEx.getMessage());
             }
@@ -307,13 +307,13 @@ public class TicTacToeConsoleView {
     }
 
     private boolean tryLoadingFromFile(String userString) throws ThrowExceptionFileActionHasFailed {
-        boardFileHandle.loadFile(userString);
+        boardFileHandle.loadFile("assets/" + userString);
         return true;
     }
 
     private boolean trySavingToFile(String userString) throws ThrowExceptionFileActionHasFailed {
         boardFileHandle = new FileHandling();
-        boardFileHandle.saveToFile(userString, game.getStringToSave());
+        boardFileHandle.saveToFile("assets/" + userString, game.getStringToSave());
         return true;
     }
 

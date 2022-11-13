@@ -40,7 +40,7 @@ public class FileHandling {
     public void loadFile(String fileName) throws ThrowExceptionFileActionHasFailed {
         String oneLine = "";
         BufferedReader myReader;
-        Path path = FileSystems.getDefault().getPath("assets/", fileName);
+        Path path = FileSystems.getDefault().getPath(fileName);
         try {
             myReader = Files.newBufferedReader(path);
             while ((oneLine = myReader.readLine()) != null) {
@@ -63,9 +63,9 @@ public class FileHandling {
      * @throws ThrowExceptionFileActionHasFailed an exception that occurs when file couldn't open (or get created) 
      */
     public void saveToFile(String fileName, String stringToWriteToFile) throws ThrowExceptionFileActionHasFailed {
-        checkFileExistsOtherwiseCreate("assets/", fileName);
+        checkFileExistsOtherwiseCreate(fileName);
 
-        Path path = FileSystems.getDefault().getPath("assets/", fileName);
+        Path path = FileSystems.getDefault().getPath(fileName);
         try {
             Files.writeString(path, stringToWriteToFile);
             setStatusOfLoadOrSaveFromFile(true);
@@ -74,10 +74,9 @@ public class FileHandling {
         }
     }
 
-    private void checkFileExistsOtherwiseCreate(String fileLocationPrefix, String fileName) 
+    private void checkFileExistsOtherwiseCreate(String fileName) 
                                                 throws ThrowExceptionFileActionHasFailed {
-        // construct a file
-        File file = new File(fileLocationPrefix + fileName);
+        File file = new File(fileName);
 
         if (!file.exists()) {
             try {

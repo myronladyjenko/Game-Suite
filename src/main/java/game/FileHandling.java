@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 
 import boardgame.Saveable;
 
@@ -18,7 +19,7 @@ import boardgame.Saveable;
  */
 public class FileHandling {
     private static boolean successfulLoadFromFile = false;
-    private static StringBuilder strToStoreBoard = new StringBuilder("");;
+    private static StringBuilder strToStoreBoard = new StringBuilder("");
 
     /**
      * The function takes a file name and a Saveable object as parameters. It reads the file line by
@@ -30,6 +31,7 @@ public class FileHandling {
      * @throws ThrowExceptionFileActionHasFailed throws this exception when file doesn't exists or fialed to open
      */
     public static void loadFile(String fileName, Saveable toLoad) throws ThrowExceptionFileActionHasFailed {
+        // StringBuilder strToStoreBoard = new StringBuilder("");
         String oneLine = "";
         BufferedReader myReader;
         Path path = FileSystems.getDefault().getPath(fileName);
@@ -37,6 +39,7 @@ public class FileHandling {
             myReader = Files.newBufferedReader(path);
             while ((oneLine = myReader.readLine()) != null) {
                 strToStoreBoard.append(oneLine + "\n");
+                System.out.println("LOOPY LOOP!");
             }
             myReader.close();
             successfulLoadFromFile = true;
@@ -54,12 +57,13 @@ public class FileHandling {
      * @param toSave The object that is to be saved to the file.
      * @throws ThrowExceptionFileActionHasFailed an exception that occurs when file couldn't open (or get created)
      */
-    public static void saveToFile(String fileName, Saveable toSave) throws ThrowExceptionFileActionHasFailed {
+    public static void saveToFile(String fileName, Saveable toSave, StandardOpenOption option) 
+                                                                            throws ThrowExceptionFileActionHasFailed {
         checkFileExistsOtherwiseCreate(fileName);
 
         Path path = FileSystems.getDefault().getPath(fileName);
         try {
-            Files.writeString(path, toSave.getStringToSave());
+            Files.writeString(path, toSave.getStringToSave(), option);
             successfulLoadFromFile = true;
         } catch(IOException e) {
             throw new ThrowExceptionFileActionHasFailed("Unable to write to the file: " + fileName);
@@ -93,6 +97,7 @@ public class FileHandling {
      * 
      * @return The string representation of the board.
      */
+    
     public static String getStringBoard() {
         return strToStoreBoard.toString();
     }
@@ -102,8 +107,9 @@ public class FileHandling {
      * 
      * @return The string representation of the board.
      */
+    /*
     public String toString() {
         return strToStoreBoard.toString();
-    }
+    }*/
 }
 

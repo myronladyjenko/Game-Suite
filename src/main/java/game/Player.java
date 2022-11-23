@@ -9,9 +9,23 @@ package game;
  */
 public class Player implements boardgame.Saveable {
     private char playerTurn;
+    private int numWins;
+    private int numTies;
+    private int numLosses;
+    private int totalGames;
+    private String playerName;
 
     public Player() {
         setFirstTurn();
+    }
+
+    public Player(String currPlayerName) {
+        setFirstTurn();
+        setWins(0);
+        setTies(0);
+        setLosses(0);
+        setTotalGames(0);
+        setPlayerName(currPlayerName);
     }
 
     /**
@@ -61,16 +75,101 @@ public class Player implements boardgame.Saveable {
 
     @Override
     public String getStringToSave() {
-        // TODO Auto-generated method stub
-        return null;
+        String stringBoardForFile = "";
+
+        stringBoardForFile = stringBoardForFile + "Player: " + this.getPlayerName() + "\n";
+        stringBoardForFile = stringBoardForFile + "Total games played: " + this.getTotalGames() + "\n";
+        stringBoardForFile = stringBoardForFile + "              Wins: " + this.getWins() + "\n";
+        stringBoardForFile = stringBoardForFile + "            Losses: " + this.getLosses() + "\n";
+        stringBoardForFile = stringBoardForFile + "              Ties: " + this.getTies() + "\n\n";
+        return stringBoardForFile;
     }
 
     @Override
     public void loadSavedString(String toLoad) {
-        // TODO Auto-generated method stub
+        String nameOfPlayer = this.getPlayerName();
+        int[] storeInfoAboutPlayer = new int[4];
+        int counter = 0;
+        int start = 0;
+        int num = 0;
+
+        String[] parsedList = toLoad.split("\\s+|:|\\n");
+        for (String elem: parsedList) {
+            if (elem.equals(nameOfPlayer)) {
+                counter = 4;
+            } else {
+                continue;
+            }
+
+            while (counter > 0) {
+                try {
+                    num = Integer.parseInt(elem);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+                storeInfoAboutPlayer[start] = num;
+                start++;
+                counter--;
+            }
+            break;
+        }
+        fillPlayerFields(storeInfoAboutPlayer);
     }
 
+    private void fillPlayerFields(int[] playerInfo) {
+        setTotalGames(playerInfo[0]);
+        setWins(playerInfo[1]);
+        setLosses(playerInfo[2]);
+        setTies(playerInfo[3]);
+    }
+
+    /**
+     * The toString() function returns a string representation of the current player's turn
+     * 
+     * @return The current player's turn.
+     */
     public String toString() {
         return "Current player is: " + Character.toString(getTurn());
     }
+
+    public void setWins(int currWins) {
+        numWins = currWins;
+    }
+
+    public int getWins() {
+        return numWins;
+    }
+
+    public void setLosses(int currLosses) {
+        numLosses = currLosses;
+    }
+
+    public int getLosses() {
+        return numLosses;
+    }
+
+    public void setTies(int currTies) {
+        numTies = currTies;
+    }
+
+    public int getTies() {
+        return numTies;
+    }
+
+    public void setPlayerName(String name) {
+        playerName = name;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setTotalGames(int gamesPlayed) {
+        totalGames = gamesPlayed;
+    }
+
+    public int getTotalGames() {
+        return totalGames;
+    }
 }
+

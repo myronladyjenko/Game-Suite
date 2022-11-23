@@ -1,4 +1,4 @@
-# Connect Four Game
+# Game Suite Application
 
 !!! IMPORTANT !!! 
 

@@ -122,9 +122,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
                     stringBoardForFile += ",";
                 }
             }
-            if (i != 0) {
-                stringBoardForFile += "\n";
-            }
+            stringBoardForFile += "\n";
         }
         return stringBoardForFile;
     }

@@ -17,8 +17,8 @@ jar {
 
 task run;
 run.doFirst {
-    println "To run the program:\njava -jar build/libs/A3.jar"
-    // java -cp build/classes/java/main game.TextUI
+    println "To run the GUI version of the game suite:\njava -jar build/libs/A3.jar\n"
+    println "To run the TextUI version of the TicTacToe game:\njava -cp build/classes/java/main game.TextUI"
 }
 dependencies {
     testImplementation('junit:junit:4.13')

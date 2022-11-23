@@ -1,5 +1,6 @@
 package tictactoe;
 
+import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 import game.ThrowExceptionFileActionHasFailed;
@@ -134,7 +135,7 @@ public class TicTacToeConsoleView {
             getUserInput("Please enter a name of the file to save to: ", fileNameSave);
         } else {
             try {
-                FileHandling.saveToFile("assets/" + getFileNameInput(), game);
+                FileHandling.saveToFile("assets/" + getFileNameInput(), game, StandardOpenOption.WRITE);
             } catch (ThrowExceptionFileActionHasFailed wrongFileEx) {
                 printString(wrongFileEx.getMessage());
             }
@@ -312,7 +313,7 @@ public class TicTacToeConsoleView {
     }
 
     private boolean trySavingToFile(String userString) throws ThrowExceptionFileActionHasFailed {
-        FileHandling.saveToFile("assets/" + userString, game);
+        FileHandling.saveToFile("assets/" + userString, game, StandardOpenOption.WRITE);
         return true;
     }
 

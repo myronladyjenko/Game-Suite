@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.nio.file.StandardOpenOption;
 
 import boardgame.ui.PositionAwareButton;
 import game.FileHandling;
@@ -27,6 +28,7 @@ public class TicTacToeUIView extends JPanel {
     private PositionAwareButton[][] buttons;
     private GameUI root;
     private boolean valueOfTurnUpdate;
+    private int playerWhoWon;
 
     public TicTacToeUIView(int wide, int tall, GameUI gameFrame) {
         super();
@@ -44,6 +46,7 @@ public class TicTacToeUIView extends JPanel {
         this.add(makeButtonGrid(tall, wide));
 
         setActionsForMenuItems();
+        root.pack();
     }
 
     private void setActionsForMenuItems() {
@@ -64,8 +67,8 @@ public class TicTacToeUIView extends JPanel {
             for (int j = 0; j < tall; j++) { 
                 buttons[i][j] = new PositionAwareButton();
                 buttons[i][j].setFont(new Font("Times New Roman", Font.PLAIN, 40));  
-                buttons[i][j].setAcross(j + 1);
-                buttons[i][j].setDown(i + 1);
+                buttons[i][j].setAcross(i + 1);
+                buttons[i][j].setDown(j + 1);
                 buttons[i][j].addActionListener(e->{
                                         takeUserInput(e);
                                         checkCurrentGameState(e);
@@ -80,6 +83,7 @@ public class TicTacToeUIView extends JPanel {
         int playerSelection = 0;
 
         if (game.isDone()) {
+            setPlayerWhoWon(game.getWinner());
             playerSelection = JOptionPane.showConfirmDialog(null, game.getGameStateMessage() + "." 
                                                 + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
 
@@ -120,7 +124,7 @@ public class TicTacToeUIView extends JPanel {
             root.selectLocationOfTheFile(1);
         
             try {
-                FileHandling.saveToFile(root.getFilePath(), game);
+                FileHandling.saveToFile(root.getFilePath(), game, StandardOpenOption.WRITE);
             } catch (ThrowExceptionFileActionHasFailed e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
@@ -159,6 +163,7 @@ public class TicTacToeUIView extends JPanel {
             if (game.takeTurn(clicked.getAcross(), clicked.getDown(), inputCharacter)) {
                 setTurnUpdate(true);
                 clicked.setText(game.getCell(clicked.getAcross(), clicked.getDown()));
+                root.pack();
             }
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
@@ -171,5 +176,13 @@ public class TicTacToeUIView extends JPanel {
 
     private boolean getTurnUpdate() {
         return valueOfTurnUpdate;
+    }
+
+    public void setPlayerWhoWon(int player) {
+        playerWhoWon = player;
+    }
+
+    public int getPlayerWhoWon() {
+        return playerWhoWon;
     }
 }

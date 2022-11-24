@@ -4,6 +4,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 import game.ThrowExceptionFileActionHasFailed;
+import game.ThrowExceptionForInvalidInput;
 import game.FileHandling;
 
 /**
@@ -23,6 +24,7 @@ public class TicTacToeConsoleView {
     private boolean improperLoading;
     private boolean fileProperlySaved;
     private String userFileNameInput;
+    private int[] coordinatesForInputPosition;
 
     private final int integerInputMenuOption = 0;
     private final int integerInputBoardPosition = 1;
@@ -33,6 +35,7 @@ public class TicTacToeConsoleView {
     // Creating a new scanner object and setting the skipMenuOption to false.
     public TicTacToeConsoleView() {
         scanner = new Scanner(System.in);
+        coordinatesForInputPosition = new int[2];
         setSkipMenuOption(false);
     }
 
@@ -47,25 +50,20 @@ public class TicTacToeConsoleView {
             printString(game.getGridWrapper().toString());
             printString("Turn - " + game.getPlayerTurn() + "\n");
             getUserInput("Please enter the position from 1 to 9 (0 to exit to the main menu): ", 
-                                         getThisTypeInput(integerInputBoardPosition));
-            int[] coordinates = new int[2];
-            if (!parseUserInput(coordinates)) {
+                                         integerInputBoardPosition);
+
+            if (!parseUserInput()) {
                 continue;
             }
-            performTurn(coordinates);
+
+            performTurn();
             if (checkIfGameHasFinished()) {
                 continue;
             }
             game.updatePlayerTurn(game.getPlayerTurn());
 
             saveFileManuallyUserPrompts();
-            if (getFileProperlySaved()) {
-                if (promptUser("Would you like to continue?\n" + "Please enter 'y' or 'n': ") == 'y') {
-                    setSkipMenuOption(true);
-                } else {
-                    setSkipMenuOption(false);
-                }
-            } else {
+            if (!getFileProperlySaved()) {
                 setSkipMenuOption(true);
             }
         }
@@ -81,7 +79,7 @@ public class TicTacToeConsoleView {
                 setImproperLoading(false);
             }
 
-            getUserInput("Please, choose a correct option (1-3): ", getThisTypeInput(integerInputMenuOption));
+            getUserInput("Please, choose a correct option (1-3): ", integerInputMenuOption);
             printString("\n");
             if (getIntegerInput() == 1) {
                 game = new TicTacToeGame();
@@ -117,16 +115,9 @@ public class TicTacToeConsoleView {
     private void hadleStepsToLoadFromFile() {
         game = new TicTacToeGame();
         getUserInput("Please enter a name of the file to load from: ", fileNameLoad);
-        if (FileHandling.getLoadFromFileResult()) {
-            try {
-                game.validateBoardFromFile(FileHandling.getStringBoard());
-            } catch (ThrowExceptionWrongBoardFormat wrongFormatEx) {
-                setImproperLoading(true);
-                printString("Couldn't load this file: " + wrongFormatEx.getMessage() + "\n");
-            } catch (ThrowExceptionTheGameHasEnded gameEndedEx) {
-                setImproperLoading(true);
-                printString(gameEndedEx.getMessage());
-            }
+        if (game.getExceptionValue()) {
+            setImproperLoading(true);
+            printString(game.getExceptionMessage());
         }
     }
 
@@ -141,14 +132,14 @@ public class TicTacToeConsoleView {
             }
         }
 
-        if (FileHandling.getLoadFromFileResult()) {
+        if (!game.getExceptionValue()) {
             setFileProperlySaved(true);
             printString("Board was successfully saved\n");
         }
     }
 
     private char promptUser(String questionToAsk) {        
-        getUserInput(questionToAsk, getThisTypeInput(characterInput));
+        getUserInput(questionToAsk, characterInput);
         return getCharacterInput();
     }
 
@@ -167,7 +158,7 @@ public class TicTacToeConsoleView {
     }
 
     private boolean checkIfGameHasFinished() {
-        if (game.isDone()) {
+        if (game.getWinner() != -1) {
             actionsAfterGameEnd();
             return true;
         } else {
@@ -189,7 +180,7 @@ public class TicTacToeConsoleView {
         setSkipMenuOption(false);
     }
 
-    private boolean parseUserInput(int[] coordinates) {
+    private boolean parseUserInput() {
         if (getIntegerInput() == 0) {
             saveFileManuallyUserPrompts();
             printString("Exiting...\n");
@@ -197,46 +188,34 @@ public class TicTacToeConsoleView {
             return false;
         }
 
-        splitUserInputToCoordinates(getIntegerInput(), coordinates);
+        splitUserInputToCoordinates(getIntegerInput());
         return true;
     }
 
-    private void performTurn(int[] coordinates) {
+    private void performTurn() {
         String currTurn = String.valueOf(game.getPlayerTurn());
         try {
-            game.takeTurn(coordinates[0], coordinates[1], currTurn);
+            game.takeTurn(coordinatesForInputPosition[0], coordinatesForInputPosition[1], currTurn);
         } catch (RuntimeException e) {
             printString(e.getMessage());
         }
     }
 
-    private void splitUserInputToCoordinates(int inputPosition, int[] coordinates) {
-        if (inputPosition == 1) {
-            fillArray(1, 1, coordinates);
-        } else if (inputPosition == 2) {
-            fillArray(1, 2, coordinates);
-        } else if (inputPosition == 3) {
-            fillArray(1, 3, coordinates);
-        } else if (inputPosition == 4) {
-            fillArray(2, 1, coordinates);
-        } else if (inputPosition == 5) {
-            fillArray(2, 2, coordinates);
-        } else if (inputPosition == 6) {
-            fillArray(2, 3, coordinates);
-        } else if (inputPosition == 7) {
-            fillArray(3, 1, coordinates);
-        } else if (inputPosition == 8) {
-            fillArray(3, 2, coordinates);
-        } else if (inputPosition == 9) {
-            fillArray(3, 3, coordinates);
-        } else {
-            fillArray(-1, -1, coordinates);
+    private void splitUserInputToCoordinates(int inputPosition) {
+        int row = 0;
+        for (int boardPosition = 0; boardPosition < game.getHeight() * game.getWidth(); boardPosition++) {
+            if (boardPosition == 3 || boardPosition == 6) {
+                row++;
+            }
+            if (inputPosition - 1 == boardPosition) {
+                fillArray(row + 1, boardPosition % 3 + 1);
+            }
         }
     }
 
-    private void fillArray(int row, int column, int[] coordinates) {
-        coordinates[0] = row;
-        coordinates[1] = column;
+    private void fillArray(int row, int column) {
+        coordinatesForInputPosition[0] = row;
+        coordinatesForInputPosition[1] = column;
     }
 
     /**
@@ -266,10 +245,10 @@ public class TicTacToeConsoleView {
                     setFileNameInput(input);    
                 }
                 break;
-            } catch (ThrowExceptionForInvalidInput e) {
-                printString(e.getMessage());
-            } catch (ThrowExceptionFileActionHasFailed e) {
-                printString(e.getMessage() + "\n");
+            } catch (ThrowExceptionForInvalidInput ex) {
+                printString(ex.getMessage());
+            } catch (ThrowExceptionFileActionHasFailed ex) {
+                printString(ex.getMessage() + "\n");
             }
         } while (true);
     }
@@ -280,8 +259,8 @@ public class TicTacToeConsoleView {
                                                     + ", which not the right length: " + userChoice.length() + "\n");
         } else {
             if (userChoice.charAt(0) != 'y' && userChoice.charAt(0) != 'n') {
-                throw new ThrowExceptionForInvalidInput("The input:" + userChoice
-                                                        + " is not 'y' or 'n'. Please enter correct format");
+                throw new ThrowExceptionForInvalidInput("The input value: " + userChoice
+                                                        + " is not 'y' or 'n'. Please enter correct format\n");
             }
         }
     }
@@ -299,7 +278,7 @@ public class TicTacToeConsoleView {
         try {
             userInputInteger = Integer.parseInt(inputToValidate);
         } catch (NumberFormatException ex) {
-            throw new ThrowExceptionForInvalidInput("The input wasn't able to be converted to an integer.\n");
+            throw new ThrowExceptionForInvalidInput("The input cannot be converted into an integer.\n");
         }
 
         if (userInputInteger < 1 || userInputInteger > 3) {
@@ -307,14 +286,12 @@ public class TicTacToeConsoleView {
         }
     }
 
-    private boolean tryLoadingFromFile(String userString) throws ThrowExceptionFileActionHasFailed {
+    private void tryLoadingFromFile(String userString) throws ThrowExceptionFileActionHasFailed {
         FileHandling.loadFile("assets/" + userString, game);
-        return true;
     }
 
-    private boolean trySavingToFile(String userString) throws ThrowExceptionFileActionHasFailed {
+    private void trySavingToFile(String userString) throws ThrowExceptionFileActionHasFailed {
         FileHandling.saveToFile("assets/" + userString, game, StandardOpenOption.WRITE);
-        return true;
     }
 
     private void displayStartGameMenu() {
@@ -348,10 +325,6 @@ public class TicTacToeConsoleView {
 
     private char getCharacterInput() {
         return userCharacterInput;
-    }
-
-    private int getThisTypeInput(int inputOption) {
-        return inputOption;
     }
 
     private void setAutoSave(boolean boolValue) {

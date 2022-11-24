@@ -1,11 +1,11 @@
 package boardgame;
 
 import java.util.Iterator;
+
 /**
  * This class  represents an abstract
  * NxM board game.  
- **/
-
+ */
 public abstract class BoardGame {
 
     private Grid grid;

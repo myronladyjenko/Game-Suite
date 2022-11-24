@@ -1,4 +1,4 @@
-package tictactoe;
+package game;
 
 /**
  * This class defines a user-defined exception 'ThrowExceptionWrongMoveOnBoard'. 

@@ -1,6 +1,8 @@
 package tictactoe;
 
 import game.Player;
+import game.ThrowExceptionTheGameHasEnded;
+import game.ThrowExceptionWrongBoardFormat;
 
 /**
  * This class is used to handle the board game for the game TicTacToe.
@@ -12,22 +14,17 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     private Player player;
     private String winnerMessage;
     private boolean allowedMove;
+    private String exceptionMessage;
+    private boolean exceptionOccured;
 
     // Creating a new TicTacToeGame object.
     public TicTacToeGame() {
         super(3, 3);
-        setGrid(new TicTacToeBoard());
+        setGrid(new TicTacToeGrid());
         player = new Player();
     }
 
-    /**
-     * It checks if the board read from the file is valid
-     * 
-     * @param stringBoard the string representation of the board read from the file
-     * @throws ThrowExceptionWrongBoardFormat an exception that occurs when the board loaded is in the wring format
-     * @throws ThrowExceptionTheGameHasEnded an exception that occurs when the game has ended
-     */
-    public void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
+    private void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
                                                                  ThrowExceptionTheGameHasEnded {
         if (stringBoard.length() < 11 || stringBoard.length() > 20) {
             throw new ThrowExceptionWrongBoardFormat("Length of the board read from"
@@ -37,7 +34,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         if (countCommas(stringBoard) != 6) {
             throw new ThrowExceptionWrongBoardFormat("Board has incorrect number of commas or newlines.\n");
         }
-        
+
         if (stringBoard.charAt(0) != 'O' && stringBoard.charAt(0) != 'X') {
             throw new ThrowExceptionWrongBoardFormat("The read file doesn't contain the player information.\n");
         }
@@ -45,13 +42,15 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         if (checkForUnexpectedSymbols(stringBoard)) {
             throw new ThrowExceptionWrongBoardFormat("The read file contains unexpected characters.\n");
         }
+
         StringBuilder playerWithWrongNumOfMoves = new StringBuilder("");
         if (checkIncorrectNumberOfMoves(stringBoard, playerWithWrongNumOfMoves)) {
             throw new ThrowExceptionWrongBoardFormat("Player: " + playerWithWrongNumOfMoves.toString()
-                                                     + " did 2 or more moves then the other player. Please restart.\n");
+                                                     + " has 2 or more moves over the other player. Please restart.\n");
         }
+
         TicTacToeGame testBoard = new TicTacToeGame();
-        testBoard.loadSavedString(stringBoard);
+        ((TicTacToeGrid) testBoard.getGrid()).parseStringIntoBoard(stringBoard);
         if (testBoard.isDone()) {
             throw new ThrowExceptionTheGameHasEnded("The game on this board has finished. Please restart.\n");
         }
@@ -93,23 +92,33 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
 
         if (Math.abs(countOnes - countTwos) >= 2) {
             if (countOnes >= countTwos) {
-                playerWhoExceedsNumTurns.append("X");
-            } else {
                 playerWhoExceedsNumTurns.append("O");
+            } else {
+                playerWhoExceedsNumTurns.append("X");
             }
             return true;
+        } else if (countOnes - countTwos == 1 && sBoard.charAt(0) == 'X') {
+            playerWhoExceedsNumTurns.append("O");
+            return true;
+        } else if (countTwos - countOnes == 1 && sBoard.charAt(0) == 'O') {
+            playerWhoExceedsNumTurns.append("X");
+            return true;
         }
+        
         return false;
     }
 
     @Override
-    // Creating a string that represents the board and the player turn.
+    /**
+     * Creating a string that represents the board and the player turn
+     * @return String representation of the board
+     */
     public String getStringToSave() {
         String stringBoardForFile = "";
         stringBoardForFile = stringBoardForFile + player.getPreviousPlayerTurn(player.getTurn()) + "\n";
 
-        for (int i = 1; i <= super.getHeight(); i++) {
-            for (int j = 1; j <= super.getWidth(); j++) {
+        for (int i = 1; i <= getHeight(); i++) {
+            for (int j = 1; j <= getWidth(); j++) {
                 if (getCell(i, j).equals("X")) {
                     stringBoardForFile += "X";
                 } else if (getCell(i, j).equals("O")) {
@@ -118,7 +127,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
                     stringBoardForFile += "";
                 }
 
-                if (j % super.getWidth() != 0) {
+                if (j % getWidth() != 0) {
                     stringBoardForFile += ",";
                 }
             }
@@ -128,17 +137,43 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
-    // Loading the saved string into the board.
+    /**
+     * This method creates a board and fills out the cells based on the string
+     * @param String representation of the board
+     */
     public void loadSavedString(String toLoad) {
+        if (prepareForLoading(toLoad)) {
+            ((TicTacToeGrid) getGrid()).parseStringIntoBoard(toLoad);
+        }
+    }
+
+    private boolean prepareForLoading(String toLoad) {
+        try {
+            validateBoardFromFile(toLoad);
+        } catch (ThrowExceptionWrongBoardFormat wrongFormatEx) {
+            setExcpetionOccured(true);
+            setExceptionMessage("Couldn't load this file: " + wrongFormatEx.getMessage() + "\n");
+            return false;
+        } catch (ThrowExceptionTheGameHasEnded gameEndedEx) {
+            setExcpetionOccured(true);
+            setExceptionMessage("Couldn't load this file: " + gameEndedEx.getMessage());
+            return false;
+        }
+
         player.updateTurn(toLoad.charAt(0));
         player.setCurrentTurn(player.getTurn());
-        ((TicTacToeBoard) getGrid()).parseStringIntoBoard(toLoad);
+        return true;
     }
 
     @Override
-    // Checking if the move is allowed and if it is, it is setting the value on the board.
+    /**
+     * @param across value of the column
+     * @param down value of the row
+     * @param input current player turn
+     * @return true if all the performed checks and operations were succesful
+     */
     public boolean takeTurn(int across, int down, String input) {
-        // Check Properly
+        // verify that the move suggested by the user is allowed
         checkBoardMove(across, down);
         checkIfCorrectCharacter(input);
         checkIfCorrectTurn(input);
@@ -170,16 +205,16 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     @Override
     // Checking if the game is done and if it is, it is checking who the winner is.
     public boolean isDone() {
-        for (int i = 1; i <= super.getHeight(); i++) {
-            if (!super.getCell(i, i).equals(" ") && super.getCell(1, i).equals(super.getCell(2, i)) 
-                && super.getCell(2, i).equals(super.getCell(3, i))) {
+        for (int i = 1; i <= getHeight(); i++) {
+            if (!getCell(i, i).equals(" ") && getCell(1, i).equals(getCell(2, i)) 
+                && getCell(2, i).equals(getCell(3, i))) {
                 setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
                 return true;
             }
         }
-        for (int i = 1; i <= super.getWidth(); i++) {
-            if (!super.getCell(i, i).equals(" ") && super.getCell(i, 1).equals(super.getCell(i, 2)) 
-                && super.getCell(i, 2).equals(super.getCell(i, 3))) {
+        for (int i = 1; i <= getWidth(); i++) {
+            if (!getCell(i, i).equals(" ") && getCell(i, 1).equals(getCell(i, 2)) 
+                && getCell(i, 2).equals(getCell(i, 3))) {
                 setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
                 return true;
             }
@@ -197,13 +232,13 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     private boolean checkDiagonalForWin() {
-        if (!super.getCell(1, 1).equals(" ") && super.getCell(1, 1).equals(super.getCell(2, 2)) 
-            && super.getCell(2, 2).equals(super.getCell(3, 3))) {
+        if (!getCell(1, 1).equals(" ") && getCell(1, 1).equals(getCell(2, 2)) 
+            && getCell(2, 2).equals(getCell(3, 3))) {
             setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
             return true;
         }
-        if (!super.getCell(2, 2).equals(" ") && super.getCell(3, 1).equals(super.getCell(2, 2)) 
-            && super.getCell(2, 2).equals(super.getCell(1, 3))) {
+        if (!getCell(2, 2).equals(" ") && getCell(3, 1).equals(getCell(2, 2)) 
+            && getCell(2, 2).equals(getCell(1, 3))) {
             setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
             return true;
         }
@@ -215,12 +250,12 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         resetIterator();
         String cellValue = "";
 
-        cellValue = super.getCell(1, 1);
+        cellValue = getCell(1, 1);
         if (cellValue.equals(" ")) {
             return false;
         }
 
-        while ((cellValue = super.getNextValue()) != null) {
+        while ((cellValue = getNextValue()) != null) {
             if (cellValue.equals(" ")) {
                 return false;
             }
@@ -251,14 +286,14 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     private void validateMove(int inputRow, int inputColumn) {
-        if (super.getCell(inputRow, inputColumn).equals("O")
-            || super.getCell(inputRow, inputColumn).equals("X")) {
+        if (getCell(inputRow, inputColumn).equals("O")
+            || getCell(inputRow, inputColumn).equals("X")) {
             setAllowedMove(false);
         }
     }
 
     private void checkOutOfBounds(int inputRow, int inputColumn) {
-        if (inputRow > super.getHeight() ||  inputColumn > super.getWidth()
+        if (inputRow > getHeight() ||  inputColumn > getWidth()
             || inputRow < 0 || inputColumn < 0) {
             setAllowedMove(false);
         }
@@ -266,13 +301,16 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
 
     private void resetIterator() {
         int dummyValue = 0;
-        while (super.getNextValue() != null) {
+        while (getNextValue() != null) {
             dummyValue = dummyValue + 1;
         }
     }
 
+    /**
+     * The method checks if the game is done and if it is, check who the winner is.
+     * @return -1 if the game hasn't ended. 1 - if X won, 2 - if O won; 0 - if a tie.
+     */
     @Override
-    // Checking if the game is done and if it is, it is checking who the winner is.
     public int getWinner() {
         if (isDone()) {
             if (getPlayerTurn() == 'X') {
@@ -298,6 +336,22 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         winnerMessage = messageToSet;
     }
 
+    private void setExceptionMessage(String exMessage) {
+        exceptionMessage = exMessage;
+    }
+
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    private void setExcpetionOccured(boolean exValue) {
+        exceptionOccured = exValue;
+    }
+
+    public boolean getExceptionValue() {
+        return exceptionOccured;
+    }
+
     @Override
     // Returning the winner message.
     public String getGameStateMessage() {
@@ -315,7 +369,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     // wrapper for getGrid()
-    public TicTacToeBoard getGridWrapper() {
-        return (TicTacToeBoard) super.getGrid();
+    public TicTacToeGrid getGridWrapper() {
+        return (TicTacToeGrid) getGrid();
     }
 }

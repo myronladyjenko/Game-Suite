@@ -18,8 +18,6 @@ import boardgame.Saveable;
  * @author Myron Ladyjenko
  */
 public class FileHandling {
-    private static boolean successfulLoadFromFile = false;
-    private static StringBuilder strToStoreBoard = new StringBuilder("");
 
     /**
      * The function takes a file name and a Saveable object as parameters. It reads the file line by
@@ -31,18 +29,19 @@ public class FileHandling {
      * @throws ThrowExceptionFileActionHasFailed throws this exception when file doesn't exists or fialed to open
      */
     public static void loadFile(String fileName, Saveable toLoad) throws ThrowExceptionFileActionHasFailed {
-        // StringBuilder strToStoreBoard = new StringBuilder("");
+        StringBuilder strToStoreBoard = new StringBuilder("");
         String oneLine = "";
+
         BufferedReader myReader;
         Path path = FileSystems.getDefault().getPath(fileName);
+
         try {
             myReader = Files.newBufferedReader(path);
             while ((oneLine = myReader.readLine()) != null) {
                 strToStoreBoard.append(oneLine + "\n");
-                System.out.println("LOOPY LOOP!");
             }
+
             myReader.close();
-            successfulLoadFromFile = true;
             toLoad.loadSavedString(strToStoreBoard.toString());
         } catch (Exception e) {
             throw new ThrowExceptionFileActionHasFailed("Provided file name is incorrect or doesn't exist or"
@@ -64,7 +63,6 @@ public class FileHandling {
         Path path = FileSystems.getDefault().getPath(fileName);
         try {
             Files.writeString(path, toSave.getStringToSave(), option);
-            successfulLoadFromFile = true;
         } catch(IOException e) {
             throw new ThrowExceptionFileActionHasFailed("Unable to write to the file: " + fileName);
         }
@@ -82,34 +80,5 @@ public class FileHandling {
             }
         }
     }
-
-    /**
-     * This function returns the value of the boolean variable successfulLoadFromFile
-     * 
-     * @return The boolean value of successfulLoadFromFile.
-     */
-    public static boolean getLoadFromFileResult() {
-        return successfulLoadFromFile;
-    }
-
-    /**
-     * It returns the string representation of the board
-     * 
-     * @return The string representation of the board.
-     */
-    
-    public static String getStringBoard() {
-        return strToStoreBoard.toString();
-    }
-
-    /**
-     * The function returns a string representation of the board
-     * 
-     * @return The string representation of the board.
-     */
-    /*
-    public String toString() {
-        return strToStoreBoard.toString();
-    }*/
 }
 

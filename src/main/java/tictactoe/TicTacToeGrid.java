@@ -5,10 +5,10 @@ package tictactoe;
  * 
  * @author Myron Ladyjenko
  */
-public class TicTacToeBoard extends boardgame.Grid {
+public class TicTacToeGrid extends boardgame.Grid {
 
     // Calling the constructor of the super class, which is Grid.
-    public TicTacToeBoard() {
+    public TicTacToeGrid() {
         super(3, 3);
     }
 

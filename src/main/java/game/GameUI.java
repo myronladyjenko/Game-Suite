@@ -30,7 +30,7 @@ public class GameUI extends JFrame {
     private final int widthOfFrame = 600;
     private final int lengthOfFrame = 500; 
 
-    private JPanel gameContainer;
+    private JPanel gamePanel;
     private JMenuBar menuBar;
     private String fileLocation;
     private JPanel buttonPanel;
@@ -54,10 +54,10 @@ public class GameUI extends JFrame {
 
         makeMenu();
         setJMenuBar(menuBar);
-        gameContainer = new JPanel();
+        gamePanel = new JPanel();
         setLayout(new BorderLayout());
         
-        this.add(gameContainer, BorderLayout.CENTER);
+        this.add(gamePanel, BorderLayout.CENTER);
         this.add(makeButtonPanel(), BorderLayout.PAGE_START);
         this.add(makePanelForSavingLoadingProfile(), BorderLayout.PAGE_END);
 
@@ -132,15 +132,15 @@ public class GameUI extends JFrame {
     }
 
     /**
-     * It removes all the components from the gameContainer, adds a new component to it, and then
-     * repaints and revalidates the gameContainer
+     * It removes all the components from the gamePanel, adds a new component to it, and then
+     * repaints and revalidates the gamePanel
      */
     public void startGame() {
         buttonToSave.setVisible(true);
         buttonToLoad.setVisible(true);
         menuBar.setVisible(true);
-        gameContainer.removeAll();
-        gameContainer.add(startupMessage());
+        gamePanel.removeAll();
+        gamePanel.add(startupMessage());
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();
@@ -244,18 +244,18 @@ public class GameUI extends JFrame {
     protected void ticTacToe() {
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
-        gameContainer.removeAll();
+        gamePanel.removeAll();
         ticTacToeView = new TicTacToeUIView(3,3,this);
         buttonToSave.setEnabled(true);
-        gameContainer.add(ticTacToeView);
+        gamePanel.add(ticTacToeView);
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();
     }
 
     protected void numericalTicTacToe() {
-        gameContainer.removeAll();
-        gameContainer.add(new NumericalTicTacToeUIView(3, 3, this));
+        gamePanel.removeAll();
+        gamePanel.add(new NumericalTicTacToeUIView(3, 3, this));
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();

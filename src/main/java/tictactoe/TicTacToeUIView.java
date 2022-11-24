@@ -1,10 +1,15 @@
 package tictactoe;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -28,6 +33,7 @@ public class TicTacToeUIView extends JPanel {
     private GameUI root;
     private boolean valueOfTurnUpdate;
     private int playerWhoWon;
+    private JMenuBar menuBar;
 
     public TicTacToeUIView(int wide, int tall, GameUI gameFrame) {
         super();
@@ -35,25 +41,50 @@ public class TicTacToeUIView extends JPanel {
         root = gameFrame;
         setGameController(new TicTacToeGame());   
 
-        JLabel startMessageLabel = new JLabel("Welcome to TicTacToe");
+        makeMenuForSaving();
+        root.setJMenuBar(menuBar);
+
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
-        turnLabel.setPreferredSize(new Dimension(100, 50));
         turnLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
+        turnLabel.setForeground(Color.BLUE);
+        add(turnLabel, BorderLayout.NORTH);
 
-        this.add(startMessageLabel, BorderLayout.NORTH);
-        this.add(turnLabel, BorderLayout.NORTH);
-        this.add(makeButtonGrid(tall, wide));
-
-        setActionsForMenuItems();
+        add(makeButtonGrid(tall, wide));
         root.pack();
     }
 
-    private void setActionsForMenuItems() {
-        root.getJMenuItemForSave(0).addActionListener(e->saveBoard());
-        root.getJMenuItemForSave(1).addActionListener(e->saveBoard());
+    /**
+     * It creates a menu bar with two menus, one for saving games and one for loading games
+     */
+    public void makeMenuForSaving() {
+        menuBar = new JMenuBar();
+        menuBar.setLayout(new BorderLayout());
+        JMenu menu = new JMenu("File Actions");
 
-        root.getJMenuItemForLoad(0).addActionListener(e->loadBoard());
-        root.getJMenuItemForLoad(1).addActionListener(e->loadBoard());
+        JMenuItem itemTicaTacToeGameSave = new JMenuItem("Save Game");
+        JMenuItem itemTicaTacToeGameLoad = new JMenuItem("Load Game");
+
+        itemTicaTacToeGameSave.addActionListener(e->saveBoard());
+        itemTicaTacToeGameLoad.addActionListener(e->loadBoard());
+
+        menu.add(itemTicaTacToeGameSave);
+        menu.add(itemTicaTacToeGameLoad);
+
+        menuBar.add(menu, BorderLayout.WEST);
+        addButtonToMenuBar();
+        menuBar.setVisible(true);
+    }
+
+    private void addButtonToMenuBar() {
+        JButton returnButton = new JButton("Return to Main Window");
+        returnButton.addActionListener(e->returnMain());
+        menuBar.add(returnButton, BorderLayout.EAST);
+    }
+
+    private void returnMain() {
+        menuBar.setVisible(false);
+        this.removeAll();
+        root.startGame();
     }
 
     private JPanel makeButtonGrid(int tall, int wide) {
@@ -69,7 +100,7 @@ public class TicTacToeUIView extends JPanel {
                 buttons[i][j].setAcross(i + 1);
                 buttons[i][j].setDown(j + 1);
                 buttons[i][j].addActionListener(e->{
-                                        takeUserInput(e);
+                                        makeUserTurn(e);
                                         checkCurrentGameState(e);
                                         });
                 panel.add(buttons[i][j]);
@@ -102,11 +133,13 @@ public class TicTacToeUIView extends JPanel {
     private void loadBoard() {
         String inputCharacter = JOptionPane.showInputDialog("Would you like to load file? Enter y- 'yes' and n - 'no'");
 
-        if (inputCharacter.charAt(0) == 'y') {
+        if (!inputCharacter.equals("") && inputCharacter != null && inputCharacter.charAt(0) == 'y') {
             root.selectLocationOfTheFile(0);
         
             try {
-                FileHandling.loadFile(root.getFilePath(), game);
+                TicTacToeGame loadedGame = new TicTacToeGame();
+                FileHandling.loadFile(root.getFilePath(), loadedGame);
+                game = loadedGame;
                 startLoadedGame();
             } catch (ThrowExceptionFileActionHasFailed e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -119,10 +152,11 @@ public class TicTacToeUIView extends JPanel {
     private void saveBoard() {
         String inputCharacter = JOptionPane.showInputDialog("Would you like to save? Enter y - 'yes' and n - 'no'"); 
 
-        if (inputCharacter.charAt(0) == 'y') {
+        if (!inputCharacter.equals("") && inputCharacter != null && inputCharacter.charAt(0) == 'y') {
             root.selectLocationOfTheFile(1);
         
             try {
+
                 FileHandling.saveToFile(root.getFilePath(), game);
             } catch (ThrowExceptionFileActionHasFailed e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -133,9 +167,20 @@ public class TicTacToeUIView extends JPanel {
     }
 
     protected void startLoadedGame() {
+        resetValuesOfTheBoard();
+
         for (int i = 0; i < game.getHeight(); i++) {
             for (int j=0; j < game.getWidth(); j++) {
                 buttons[i][j].setText(game.getCell(buttons[i][j].getAcross(), buttons[i][j].getDown())); 
+            }
+        }
+        turnLabel.setText("Turn - " + game.getPlayerTurn() + "\n");
+    }
+
+    private void resetValuesOfTheBoard() {
+        for (int i = 0; i < game.getHeight(); i++) {
+            for (int j=0; j < game.getWidth(); j++) {
+                buttons[i][j].setText(" "); 
             }
         }
     }
@@ -149,17 +194,22 @@ public class TicTacToeUIView extends JPanel {
         }
     }
 
+    /**
+     * This function sets the game controller to the controller passed in as a parameter.
+     * 
+     * @param controller The controller object that will be used to control the game.
+     */
     public void setGameController(TicTacToeGame controller) {
         this.game = controller;
     }
 
-    private void takeUserInput(ActionEvent e) {
+    private void makeUserTurn(ActionEvent e) {
         setTurnUpdate(false);
-        String inputCharacter = JOptionPane.showInputDialog("Please input a character: 'X' or 'O'"); 
+        // String inputCharacter = JOptionPane.showInputDialog("Please input a character: 'X' or 'O'"); 
 
         PositionAwareButton clicked = (PositionAwareButton) (e.getSource());
         try {
-            if (game.takeTurn(clicked.getAcross(), clicked.getDown(), inputCharacter)) {
+            if (game.takeTurn(clicked.getAcross(), clicked.getDown(), Character.toString(game.getPlayerTurn()))) {
                 setTurnUpdate(true);
                 clicked.setText(game.getCell(clicked.getAcross(), clicked.getDown()));
                 root.pack();

@@ -5,9 +5,6 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
@@ -17,6 +14,7 @@ import tictactoe.TicTacToeUIView;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 
 /**
@@ -26,15 +24,12 @@ import java.io.File;
  */
 public class GameUI extends JFrame {
 
-    private final int widthOfFrame = 600;
-    private final int lengthOfFrame = 500; 
+    private final int widthOfFrame = 450;
+    private final int lengthOfFrame = 130; 
 
     private JPanel gamePanel;
-    private JMenuBar menuBar;
     private String fileLocation;
     private JPanel buttonPanel;
-    private JMenu menuForLoadingGames;
-    private JMenu menuForSavingGames;
     private JButton buttonToSave;
     private JButton buttonToLoad;
 
@@ -45,25 +40,21 @@ public class GameUI extends JFrame {
     // The constructor of the class. It is called when an object of the class is created.
     public GameUI(String gameTitle) {
         super(gameTitle);
-        this.setSize(widthOfFrame, lengthOfFrame);
+        setMinimumSize(new Dimension(widthOfFrame, lengthOfFrame));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        playerOne = new Player("PlayerOne");
-        playerTwo = new Player("PlayerTwo");
-
-        makeMenu();
-        setJMenuBar(menuBar);
-        gamePanel = new JPanel();
         setLayout(new BorderLayout());
-        
-        this.add(gamePanel, BorderLayout.CENTER);
-        this.add(makeButtonPanel(), BorderLayout.PAGE_START);
-        this.add(makePanelForSavingLoadingProfile(), BorderLayout.PAGE_END);
 
+        playerOne = new Player("Player One");
+        playerTwo = new Player("Player Two");
+        
+        gamePanel = new JPanel();
+        add(gamePanel, BorderLayout.CENTER);
+        add(makeButtonPanel(), BorderLayout.PAGE_START);
+        add(makePanelForSavingLoadingUserProfile(), BorderLayout.PAGE_END);
         startGame();
     }
 
-    private JPanel makePanelForSavingLoadingProfile() {
+    private JPanel makePanelForSavingLoadingUserProfile() {
         buttonPanel = new JPanel();
         buttonToSave = new JButton("Save User Profile");
         buttonToLoad = new JButton("Load User Profile");
@@ -137,37 +128,11 @@ public class GameUI extends JFrame {
     public void startGame() {
         buttonToSave.setVisible(true);
         buttonToLoad.setVisible(true);
-        menuBar.setVisible(true);
         gamePanel.removeAll();
         gamePanel.add(startupMessage());
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();
-    }
-
-    /**
-     * It creates a menu bar with two menus, one for saving games and one for loading games
-     */
-    public void makeMenu() {
-        menuBar = new JMenuBar();
-        JMenu menu = new JMenu("File Actions");
-        menuForSavingGames = new JMenu("Save game");
-        menuForLoadingGames = new JMenu("Load game");
-
-        JMenuItem itemTicaTacToeGameSave = new JMenuItem("TicTacToe");
-        JMenuItem itemNumericalTicTacToeGameSave = new JMenuItem("Numerical TicTacToe");
-        JMenuItem itemTicaTacToeGameLoad = new JMenuItem("TicTacToe");
-        JMenuItem itemNumericalTicTacToeGameLoad = new JMenuItem("Numerical TicTacToe");
-
-        menuForLoadingGames.add(itemNumericalTicTacToeGameLoad);
-        menuForLoadingGames.add(itemTicaTacToeGameLoad);
-        menuForSavingGames.add(itemNumericalTicTacToeGameSave);
-        menuForSavingGames.add(itemTicaTacToeGameSave);
-
-        menu.add(menuForLoadingGames);
-        menu.add(menuForSavingGames);
-        menuBar.add(menu);
-        menuBar.setVisible(false);
     }
 
     /**
@@ -229,13 +194,13 @@ public class GameUI extends JFrame {
     }
 
     private JButton makeTicTacToeButton() {
-        JButton button = new JButton("Start new TicTacToe game");
+        JButton button = new JButton("Start TicTacToe game");
         button.addActionListener(e->ticTacToe());
         return button;
     }
 
     private JButton makeNumericalTicTacToeButton() {
-        JButton button = new JButton("Start new Numerical TicTacToe");
+        JButton button = new JButton("Start Numerical TicTacToe game");
         button.addActionListener(e->numericalTicTacToe());
         return button;
     }
@@ -245,7 +210,7 @@ public class GameUI extends JFrame {
         buttonToLoad.setVisible(false);
         gamePanel.removeAll();
         ticTacToeView = new TicTacToeUIView(3,3,this);
-        buttonToSave.setEnabled(true);
+        // buttonToSave.setEnabled(true);
         gamePanel.add(ticTacToeView);
         getContentPane().repaint();
         getContentPane().revalidate();
@@ -279,27 +244,6 @@ public class GameUI extends JFrame {
     public String getFilePath() {
         return fileLocation;
     }
-
-    /**
-     * This function returns the JMenuItem at the specified position in the menuForSavingGames JMenu.
-     * 
-     * @param position The position of the menu item in the menu.
-     * @return The JMenuItem at the specified position.
-     */
-    public JMenuItem getJMenuItemForSave(int position) {
-        return menuForSavingGames.getItem(position);
-    }
-
-    /**
-     * This function returns the JMenuItem at the specified position in the menuForLoadingGames JMenu.
-     * 
-     * @param position The position of the menu item in the menu.
-     * @return The JMenuItem at the specified position.
-     */
-    public JMenuItem getJMenuItemForLoad(int position) {
-        return menuForLoadingGames.getItem(position);
-    }
-
 
     /**
      * The main function is the entry point of the program

@@ -57,9 +57,9 @@ public abstract class BoardGame {
     
     /** 
      * Overloaded method that facilitates the placement of an input on the board
-     *  with integer input. Method should be overriden 
+     * with integer input. Method should be overriden 
      * to validate input prior to placing the input value. 
-     *  Overridden method should throw exceptions when validating input.
+     * Overridden method should throw exceptions when validating input.
      * @param across across index, zero based
      * @param down  down index, zero based
      * @param input  int input from game

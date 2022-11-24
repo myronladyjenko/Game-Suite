@@ -40,7 +40,6 @@ public class Grid {
 
     /** 
      * Empties the grid and sets all positions to a space
-     * 
      */
     public void emptyGrid() {
             data = new ArrayList<>();

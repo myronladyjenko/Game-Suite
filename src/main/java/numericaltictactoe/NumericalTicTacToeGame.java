@@ -1,30 +1,29 @@
-package tictactoe;
+package numericaltictactoe;
 
 import game.Player;
 import game.ThrowExceptionTheGameHasEnded;
 import game.ThrowExceptionWrongBoardFormat;
 
 /**
- * This class is used to handle the board game for the game TicTacToe.
+ * This class is used to handle the board game for the game NumericalTicTacToe.
  * It allows to make turns on board and determines the players playing the game. 
  * 
  * @author Myron Ladyjenko
  */
-public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Saveable {
+public class NumericalTicTacToeGame extends boardgame.BoardGame implements boardgame.Saveable {
     private Player player;
     private String winnerMessage;
     private boolean allowedMove;
     private String exceptionMessage;
     private boolean exceptionOccured;
 
-    // Creating a new TicTacToeGame object.
-    public TicTacToeGame() {
-        super(3, 3);
-        setGrid(new TicTacToeGrid());
-        player = new Player();
+    public NumericalTicTacToeGame(int wide, int high) {
+        super(wide, high);
+        setGrid(new NumericalTicTacToeGrid());
+        player = new Player("O");
     }
 
-    private void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
+        private void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
                                                                  ThrowExceptionTheGameHasEnded {
         checkBasicBoardRequirements(stringBoard);
 
@@ -38,8 +37,8 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
                                                      + " has 2 or more moves over the other player. Please restart.\n");
         }
 
-        TicTacToeGame testBoard = new TicTacToeGame();
-        ((TicTacToeGrid) testBoard.getGrid()).parseStringIntoBoard(stringBoard);
+        NumericalTicTacToeGame testBoard = new NumericalTicTacToeGame(3, 3);
+        ((NumericalTicTacToeGrid) testBoard.getGrid()).parseStringIntoBoard(stringBoard);
         if (testBoard.isDone()) {
             throw new ThrowExceptionTheGameHasEnded("The game on this board has finished. Please restart.\n");
         }
@@ -56,7 +55,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
             throw new ThrowExceptionWrongBoardFormat("Board has incorrect number of commas or newlines.\n");
         }
 
-        if (stringBoard.charAt(0) != 'O' && stringBoard.charAt(0) != 'X') {
+        if (stringBoard.charAt(0) != 'O' && stringBoard.charAt(0) != 'E') {
             throw new ThrowExceptionWrongBoardFormat("The read file doesn't contain the player information.\n");
         }
 
@@ -71,8 +70,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
 
     private boolean twoMovesWithNoSeparator(String stringBoard) {
         for (int i = 0; i < stringBoard.length() - 1; i++) {
-            if ((stringBoard.charAt(i) == 'O' || stringBoard.charAt(i) == 'X') 
-                && (stringBoard.charAt(i + 1) == 'O' || stringBoard.charAt(i + 1) == 'X')) {
+            if (Character.isDigit((stringBoard.charAt(i))) && Character.isDigit((stringBoard.charAt(i + 1)))) {
                 return true;
             }
         }
@@ -82,7 +80,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     private int checkForTotalNumTurns(String stringBoard) {
         int countTurns = 0;
         for (int i = 0; i < stringBoard.length(); i++) {
-            if (stringBoard.charAt(i) == 'X' || stringBoard.charAt(i) == 'O') {
+            if (stringBoard.charAt(i) != ' ' && stringBoard.charAt(i) != ',' && stringBoard.charAt(i) != '\n') {
                 countTurns++;
             }
         }
@@ -103,7 +101,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         String sBoard = stringBoard.replaceAll(",", "");
         sBoard = sBoard.replaceAll("\n", "");
         for (int i = 0; i < sBoard.length(); i++) {
-            if (sBoard.charAt(i) != 'O' && sBoard.charAt(i) != 'X') {
+            if (!Character.isDigit(sBoard.charAt(i))) {
                 return true;
             }
         }
@@ -115,10 +113,10 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         int countTwos = 0;
 
         for (int i = 1; i < sBoard.length(); i++) {
-            if (sBoard.charAt(i) == 'O') {
+            if (Integer.valueOf(sBoard.charAt(i)) % 2 == 1) {
                 countOnes++;
             }
-            if (sBoard.charAt(i) == 'X') {
+            if (Integer.valueOf(sBoard.charAt(i)) % 2 == 0) {
                 countTwos++;
             }
         }
@@ -127,16 +125,17 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
             if (countOnes >= countTwos) {
                 playerWhoExceedsNumTurns.append("O");
             } else {
-                playerWhoExceedsNumTurns.append("X");
+                playerWhoExceedsNumTurns.append("E");
             }
             return true;
-        } else if (countOnes - countTwos == 1 && sBoard.charAt(0) == 'X') {
+        } else if (countOnes - countTwos == 1 && sBoard.charAt(0) == 'E') {
             playerWhoExceedsNumTurns.append("O");
             return true;
         } else if (countTwos - countOnes == 1 && sBoard.charAt(0) == 'O') {
-            playerWhoExceedsNumTurns.append("X");
+            playerWhoExceedsNumTurns.append("E");
             return true;
-        }    
+        }
+        
         return false;
     }
 
@@ -147,14 +146,13 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
      */
     public String getStringToSave() {
         String stringBoardForFile = "";
-        stringBoardForFile = stringBoardForFile + player.getPreviousPlayerTurn(player.getTurn()) + "\n";
+        stringBoardForFile = stringBoardForFile
+                             + convertPlayerName(player.getPreviousPlayerTurn(player.getTurn())) + "\n";
 
         for (int i = 1; i <= getHeight(); i++) {
             for (int j = 1; j <= getWidth(); j++) {
-                if (getCell(i, j).equals("X")) {
-                    stringBoardForFile += "X";
-                } else if (getCell(i, j).equals("O")) {
-                    stringBoardForFile += "O";
+                if (!getCell(i, j).equals(" ")) {
+                    stringBoardForFile += getCell(i, j);
                 } else {
                     stringBoardForFile += "";
                 }
@@ -175,7 +173,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
      */
     public void loadSavedString(String toLoad) {
         if (prepareForLoading(toLoad)) {
-            ((TicTacToeGrid) getGrid()).parseStringIntoBoard(toLoad);
+            ((NumericalTicTacToeGrid) getGrid()).parseStringIntoBoard(toLoad);
         }
     }
 
@@ -198,100 +196,19 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     @Override
-    /**
-     * @param across value of the column
-     * @param down value of the row
-     * @param input current player turn
-     * @return true if all the performed checks and operations were succesful
-     */
+    // A method that is required to be implemented by the BoardGame class. It is not used in this game.
     public boolean takeTurn(int across, int down, String input) {
+        setValue(across, down, input);
+        return false;
+    }
+
+    @Override
+    public boolean takeTurn(int across, int down, int input) {
         // verify that the move suggested by the user is allowed
         checkBoardMove(across, down);
-        checkIfCorrectCharacter(input);
         checkIfCorrectTurn(input);
 
         setValue(across, down, input);
-        return true;
-    }
-
-    private void checkIfCorrectCharacter(String input) {
-        if (input == null || input.length() != 1 || input.length() == 0 
-            || (input.charAt(0) != 'X' && input.charAt(0) != 'O')) {
-            throw new RuntimeException("Input is invalid. Please enter 'X' or 'O'");
-        }
-    }
-
-    private void checkIfCorrectTurn(String input) {
-        if (input.charAt(0) != getPlayerTurn()) {
-            throw new RuntimeException("It's turn : " + getPlayerTurn() + ". Please wait");
-        }
-    }
-
-    @Override
-    // A method that is required to be implemented by the BoardGame class. It is not used in this game.
-    public boolean takeTurn(int across, int down, int input) {
-        setValue(across, down, input);
-        return false;
-    }
-
-    @Override
-    // Checking if the game is done and if it is, it is checking who the winner is.
-    public boolean isDone() {
-        for (int i = 1; i <= getHeight(); i++) {
-            if (!getCell(i, i).equals(" ") && getCell(1, i).equals(getCell(2, i)) 
-                && getCell(2, i).equals(getCell(3, i))) {
-                setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
-                return true;
-            }
-        }
-        for (int i = 1; i <= getWidth(); i++) {
-            if (!getCell(i, i).equals(" ") && getCell(i, 1).equals(getCell(i, 2)) 
-                && getCell(i, 2).equals(getCell(i, 3))) {
-                setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
-                return true;
-            }
-        }
-
-        if (checkDiagonalForWin()) {
-            return true;
-        }
-        
-        if (checkTie()) {
-            setGameStateMessage("The game is a tie!");
-            return true; 
-        }
-        return false;
-    }
-
-    private boolean checkDiagonalForWin() {
-        if (!getCell(1, 1).equals(" ") && getCell(1, 1).equals(getCell(2, 2)) 
-            && getCell(2, 2).equals(getCell(3, 3))) {
-            setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
-            return true;
-        }
-        if (!getCell(2, 2).equals(" ") && getCell(3, 1).equals(getCell(2, 2)) 
-            && getCell(2, 2).equals(getCell(1, 3))) {
-            setGameStateMessage("Congratulations to " + getPlayerTurn() + " player");
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean checkTie() {
-        resetIterator();
-        String cellValue = "";
-
-        cellValue = getCell(1, 1);
-        if (cellValue.equals(" ")) {
-            return false;
-        }
-
-        while ((cellValue = getNextValue()) != null) {
-            if (cellValue.equals(" ")) {
-                return false;
-            }
-        }
         return true;
     }
 
@@ -312,8 +229,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     private void validateMove(int inputRow, int inputColumn) {
-        if (getCell(inputRow, inputColumn).equals("O")
-            || getCell(inputRow, inputColumn).equals("X")) {
+        if (!getCell(inputRow, inputColumn).equals("")) {
             setAllowedMove(false);
         }
     }
@@ -325,6 +241,104 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         }
     }
 
+    private void checkIfCorrectTurn(int input) {
+        if (input % 2 == 0 && convertPlayerName(player.getTurn()).equals("O")) {
+            throw new RuntimeException("It's turn : " + convertPlayerName(player.getTurn()) + ". Please wait");
+        }
+    }
+
+     @Override
+    // Checking if the game is done and if it is, it is checking who the winner is.
+    public boolean isDone() {
+        if (checkHorizontalWin()) {
+            return true;
+        }
+
+        if (checkVerticalWin()) {
+            return true;
+        }
+
+        if (checkDiagonalForWin()) {
+            return true;
+        }
+        
+        if (checkTie()) {
+            setGameStateMessage("The game is a tie!");
+            return true; 
+        }
+        return false;
+    }
+
+    private boolean checkHorizontalWin() {
+        for (int i = 1; i <= getHeight(); i++) {
+            if (!getCell(1, i).equals(" ") && !getCell(2, i).equals(" ") 
+                && !getCell(3, i).equals(" ")) {
+                if ((Integer.valueOf(getCell(1, i)) 
+                    + Integer.valueOf(getCell(2, i)) 
+                    + Integer.valueOf(getCell(3, i))) == 15) {
+                    setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkVerticalWin() {
+        for (int i = 1; i <= getWidth(); i++) {
+            if (!getCell(i, 1).equals(" ") && !getCell(i, 2).equals(" ") 
+                && !getCell(i, 3).equals(" ")) {
+                if ((Integer.valueOf(getCell(i, 1)) 
+                    + Integer.valueOf(getCell(i, 2)) 
+                    + Integer.valueOf(getCell(i, 3))) == 15) {
+                    setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkDiagonalForWin() {
+        if (!getCell(1, 1).equals(" ") && !getCell(2, 2).equals(" ") 
+            && !getCell(3, 3).equals(" ")) {
+            if ((Integer.valueOf(getCell(1, 1)) 
+                + Integer.valueOf(getCell(2, 2)) 
+                + Integer.valueOf(getCell(3, 3))) == 15) {
+                setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                return true;
+            }
+        }
+
+        if (!getCell(3, 1).equals(" ") && !getCell(2, 2).equals(" ") 
+            && !getCell(1, 3).equals(" ")) {
+            if ((Integer.valueOf(getCell(3, 1)) 
+                + Integer.valueOf(getCell(2, 2)) 
+                + Integer.valueOf(getCell(1, 3))) == 15) {
+                setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkTie() {
+        resetIterator();
+        String cellValue = "";
+
+        cellValue = getCell(1, 1);
+        if (cellValue.equals(" ")) {
+            return false;
+        }
+
+        while ((cellValue = getNextValue()) != null) {
+            if (cellValue.equals(" ")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void resetIterator() {
         int dummyValue = 0;
         while (getNextValue() != null) {
@@ -332,16 +346,25 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         }
     }
 
+    private String convertPlayerName(char currPlayerTurn) {
+        if (currPlayerTurn == 'O') {
+            return "O";
+        }
+
+        return "E";
+    }
+
     /**
      * The method checks if the game is done and if it is, check who the winner is.
-     * @return -1 if the game hasn't ended. 1 - if X won, 2 - if O won; 0 - if a tie.
+     * @return -1 if the game hasn't ended. 1 - if Players who plays odd numbers won; 
+     * 2 - if players who plays even numbers won; 0 - if a tie.
      */
     @Override
     public int getWinner() {
         if (isDone()) {
-            if (getPlayerTurn() == 'X') {
+            if (player.getTurn() == 'O') {
                 return 1;
-            } else if (getPlayerTurn() == 'O') {
+            } else if (player.getTurn() == 'X') {
                 return 2;
             }
             return 0;
@@ -350,16 +373,22 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         return -1;
     }
 
+    private void setGameStateMessage(String messageToSet) {
+        winnerMessage = messageToSet;
+    }
+
+    @Override
+    // Returning the winner message.
+    public String getGameStateMessage() {
+        return winnerMessage;
+    }
+
     private void setAllowedMove(boolean booleanSetMove) {
         allowedMove = booleanSetMove;
     }
 
     private boolean getAllowedMove() {
         return allowedMove;
-    }
-
-    private void setGameStateMessage(String messageToSet) {
-        winnerMessage = messageToSet;
     }
 
     private void setExceptionMessage(String exMessage) {
@@ -377,25 +406,5 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     public boolean getExceptionValue() {
         return exceptionOccured;
     }
-
-    @Override
-    // Returning the winner message.
-    public String getGameStateMessage() {
-        return winnerMessage;
-    }
-
-    // wrapper for player.getTurn()
-    public char getPlayerTurn() {
-        return player.getTurn(); 
-    }
-
-    // wrapper for player.updateTurn()
-    public void updatePlayerTurn(char currTurn) {
-        player.updateTurn(currTurn);
-    }
-
-    // wrapper for getGrid()
-    public TicTacToeGrid getGridWrapper() {
-        return (TicTacToeGrid) getGrid();
-    }
+    
 }

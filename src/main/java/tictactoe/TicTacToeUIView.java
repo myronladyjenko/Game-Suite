@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.nio.file.StandardOpenOption;
 
 import boardgame.ui.PositionAwareButton;
 import game.FileHandling;
@@ -124,7 +123,7 @@ public class TicTacToeUIView extends JPanel {
             root.selectLocationOfTheFile(1);
         
             try {
-                FileHandling.saveToFile(root.getFilePath(), game, StandardOpenOption.WRITE);
+                FileHandling.saveToFile(root.getFilePath(), game);
             } catch (ThrowExceptionFileActionHasFailed e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }

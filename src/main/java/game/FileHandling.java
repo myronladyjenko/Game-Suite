@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 import boardgame.Saveable;
 
@@ -56,13 +55,13 @@ public class FileHandling {
      * @param toSave The object that is to be saved to the file.
      * @throws ThrowExceptionFileActionHasFailed an exception that occurs when file couldn't open (or get created)
      */
-    public static void saveToFile(String fileName, Saveable toSave, StandardOpenOption option) 
+    public static void saveToFile(String fileName, Saveable toSave) 
                                                                             throws ThrowExceptionFileActionHasFailed {
         checkFileExistsOtherwiseCreate(fileName);
 
         Path path = FileSystems.getDefault().getPath(fileName);
         try {
-            Files.writeString(path, toSave.getStringToSave(), option);
+            Files.writeString(path, toSave.getStringToSave());
         } catch(IOException e) {
             throw new ThrowExceptionFileActionHasFailed("Unable to write to the file: " + fileName);
         }

@@ -18,7 +18,6 @@ import tictactoe.TicTacToeUIView;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.File;
-import java.nio.file.StandardOpenOption;
 
 /**
  * This class creates the window for playing the games from GUI
@@ -114,8 +113,8 @@ public class GameUI extends JFrame {
 
         ticTacToeView.setPlayerWhoWon(-1);
         try {
-            FileHandling.saveToFile(getFilePath(), playerOne, StandardOpenOption.TRUNCATE_EXISTING);
-            FileHandling.saveToFile(getFilePath(), playerTwo, StandardOpenOption.APPEND);
+            FileHandling.saveToFile(getFilePath(), playerOne);
+            FileHandling.saveToFile(getFilePath(), playerTwo);
         } catch (ThrowExceptionFileActionHasFailed e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

@@ -1,6 +1,5 @@
 package tictactoe;
 
-import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 
 import game.ThrowExceptionFileActionHasFailed;
@@ -22,7 +21,6 @@ public class TicTacToeConsoleView {
     private boolean autoSave;
     private boolean skipMenuOption;
     private boolean improperLoading;
-    private boolean fileProperlySaved;
     private String userFileNameInput;
     private int[] coordinatesForInputPosition;
 
@@ -60,12 +58,9 @@ public class TicTacToeConsoleView {
             if (checkIfGameHasFinished()) {
                 continue;
             }
-            game.updatePlayerTurn(game.getPlayerTurn());
 
+            game.updatePlayerTurn(game.getPlayerTurn());
             saveFileManuallyUserPrompts();
-            if (!getFileProperlySaved()) {
-                setSkipMenuOption(true);
-            }
         }
         scanner.close();
     }
@@ -96,6 +91,7 @@ public class TicTacToeConsoleView {
             }
         } while (true);
     
+        setSkipMenuOption(true);
         promptForAutoSaveToASpecificFile();
         return getIntegerInput();
     }
@@ -126,14 +122,13 @@ public class TicTacToeConsoleView {
             getUserInput("Please enter a name of the file to save to: ", fileNameSave);
         } else {
             try {
-                FileHandling.saveToFile("assets/" + getFileNameInput(), game, StandardOpenOption.WRITE);
+                FileHandling.saveToFile("assets/" + getFileNameInput(), game);
             } catch (ThrowExceptionFileActionHasFailed wrongFileEx) {
                 printString(wrongFileEx.getMessage());
             }
         }
 
         if (!game.getExceptionValue()) {
-            setFileProperlySaved(true);
             printString("Board was successfully saved\n");
         }
     }
@@ -148,7 +143,6 @@ public class TicTacToeConsoleView {
             if (promptUser("Would you like to save the board?\n" + "Please enter 'y' or 'n': ") == 'y') {
                 handleStepsToSaveToFile();
             } else {
-                setFileProperlySaved(false);
                 printString("The Board is not saved\n\n");
             }
         } else {
@@ -172,10 +166,14 @@ public class TicTacToeConsoleView {
     private void actionsAfterGameEnd() {
         displayFinalResultsForGame();
 
-        if (promptUser("Would you like to save the board?\n" + "Please enter 'y' or 'n': ") == 'y') {
-            handleStepsToSaveToFile();
+        if (!getAutoSaveValue()) {
+            if (promptUser("Would you like to save the board?\n" + "Please enter 'y' or 'n': ") == 'y') {
+                handleStepsToSaveToFile();
+            } else {
+                printString("The Board is not saved\n\n");
+            }
         } else {
-            printString("The Board is not Saved\n\n");
+            printString("The Board is saved\n\n");
         }
         setSkipMenuOption(false);
     }
@@ -291,7 +289,7 @@ public class TicTacToeConsoleView {
     }
 
     private void trySavingToFile(String userString) throws ThrowExceptionFileActionHasFailed {
-        FileHandling.saveToFile("assets/" + userString, game, StandardOpenOption.WRITE);
+        FileHandling.saveToFile("assets/" + userString, game);
     }
 
     private void displayStartGameMenu() {
@@ -349,14 +347,6 @@ public class TicTacToeConsoleView {
 
     private boolean getImproperLoading() {
         return improperLoading;
-    }
-
-    private void setFileProperlySaved(boolean boolValue) {
-        fileProperlySaved = boolValue;
-    }
-
-    private boolean getFileProperlySaved() {
-        return fileProperlySaved;
     }
 
     private void setFileNameInput(String userInput) {

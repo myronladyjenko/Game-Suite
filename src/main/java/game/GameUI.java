@@ -33,6 +33,7 @@ public class GameUI extends JFrame {
     private String fileLocation;
     private JButton buttonToSave;
     private JButton buttonToLoad;
+    private JButton ticTacToeButton;
 
     private Player playerOne;
     private Player playerTwo;
@@ -201,6 +202,7 @@ public class GameUI extends JFrame {
     private JButton makeTicTacToeButton() {
         JButton button = new JButton("Start TicTacToe game");
         button.addActionListener(e->ticTacToe());
+        setTicTacToeButton(button);
         return button;
     }
 
@@ -264,6 +266,14 @@ public class GameUI extends JFrame {
      */
     public String getFilePath() {
         return fileLocation;
+    }
+
+    private void setTicTacToeButton(JButton button) {
+        ticTacToeButton = button;
+    }
+
+    public JButton getTicTacToeButton() {
+        return ticTacToeButton;
     }
 
     /**

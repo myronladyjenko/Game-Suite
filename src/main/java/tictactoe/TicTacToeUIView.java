@@ -44,6 +44,8 @@ public class TicTacToeUIView extends JPanel {
         makeMenuForSaving();
         root.setJMenuBar(menuBar);
 
+        root.getTicTacToeButton().addActionListener(e->saveBoard());
+
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
         turnLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
         turnLabel.setForeground(Color.BLUE);
@@ -82,8 +84,11 @@ public class TicTacToeUIView extends JPanel {
     }
 
     private void returnMain() {
+        // NEED TO ADD IF HASN"T BEEN CHECKED
+        saveBoard();
         menuBar.setVisible(false);
         this.removeAll();
+        removeActionListenerFromGameButton();
         root.startGame();
     }
 
@@ -120,6 +125,7 @@ public class TicTacToeUIView extends JPanel {
             if (playerSelection == JOptionPane.NO_OPTION) {
                 menuBar.setVisible(false);
                 this.removeAll();
+                removeActionListenerFromGameButton();
                 root.startGame();
             } else {
                 startNewGame();
@@ -132,10 +138,15 @@ public class TicTacToeUIView extends JPanel {
         }
     }
 
+    private void removeActionListenerFromGameButton() {
+        JButton button = root.getTicTacToeButton();
+        button.removeActionListener(button.getActionListeners()[0]);
+    }
+
     private void loadBoard() {
         String inputCharacter = JOptionPane.showInputDialog("Would you like to load file? Enter y- 'yes' and n - 'no'");
 
-        if (!inputCharacter.equals("") && inputCharacter != null && inputCharacter.charAt(0) == 'y') {
+        if (inputCharacter != null && !inputCharacter.equals("") && inputCharacter.charAt(0) == 'y') {
             root.selectLocationOfTheFile(0);
         
             try {
@@ -147,24 +158,31 @@ public class TicTacToeUIView extends JPanel {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Board hasn't been loaded");
+            if (inputCharacter != null && inputCharacter.charAt(0) == 'n') {
+                JOptionPane.showMessageDialog(null, "Board hasn't been loaded");
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please try again.");
+            }
         }
     }
 
     private void saveBoard() {
         String inputCharacter = JOptionPane.showInputDialog("Would you like to save? Enter y - 'yes' and n - 'no'"); 
 
-        if (!inputCharacter.equals("") && inputCharacter != null && inputCharacter.charAt(0) == 'y') {
+        if (inputCharacter != null && !inputCharacter.equals("") && inputCharacter.charAt(0) == 'y') {
             root.selectLocationOfTheFile(1);
         
             try {
-
                 FileHandling.saveToFile(root.getFilePath(), game);
             } catch (ThrowExceptionFileActionHasFailed e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Invalid input. Board hasn't been saved");
+            if (inputCharacter != null && inputCharacter.charAt(0) == 'n') {
+                JOptionPane.showMessageDialog(null, "Board hasn't been saved");
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please try again.");
+            }
         }
     }
 

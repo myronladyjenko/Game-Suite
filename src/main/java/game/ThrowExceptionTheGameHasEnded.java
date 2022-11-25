@@ -1,9 +1,9 @@
 package game;
 
 /**
- * This class defines a user-defined exception 'ThrowExceptionWrongMoveOnBoard'. 
- * This exception gets thrown when the user tries to make an invalid move on the board. 
- * The passed message gets to the superclass where gets set and is accessible afterwards.
+ * This class defines a user-defined exception 'ThrowExceptionTheGameHasEnded'. 
+ * This exception gets thrown when the loaded game is ended 
+ * (there is winning combination on the board or the game is a tie)
  * 
  * @author Myron Ladyjenko
  */

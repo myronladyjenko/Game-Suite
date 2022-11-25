@@ -1,7 +1,14 @@
 package numericaltictactoe;
 
+/**
+ * This class is used to control the build the board for the game 
+ * Numerical TicTacToe (from grid)
+ * 
+ * @author Myron Ladyjenko
+ */
 public class NumericalTicTacToeGrid extends boardgame.Grid {
 
+    // Calling the constructor of the superclass, which is the Grid class.
     public NumericalTicTacToeGrid() {
         super(3, 3);
     }

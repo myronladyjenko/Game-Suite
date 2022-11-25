@@ -8,6 +8,11 @@ public class Grid {
     private int width;
     private ArrayList<String> data;
 
+    /**
+     * 
+     * @param wide
+     * @param tall
+     */
     public Grid(int wide, int tall) {
             setWidth(wide);
             setHeight(tall);

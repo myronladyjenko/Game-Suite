@@ -17,6 +17,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     private String exceptionMessage;
     private boolean exceptionOccured;
 
+    // Creating a new NumericalTicTacToeGame object.
     public NumericalTicTacToeGame(int wide, int high) {
         super(wide, high);
         setGrid(new NumericalTicTacToeGrid());
@@ -196,13 +197,31 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         return true;
     }
 
+    
+    /**
+     * This function takes in the coordinates of the cell that the user wants to change, and the value
+     * that the user wants to change it to. It then sets the value of the cell to the value that the
+     * user wants to change it to
+     * 
+     * @param across The x coordinate of the cell you want to change
+     * @param down The row of the cell you want to change
+     * @param input The value that the user entered.
+     * @return A boolean value.
+     */
     @Override
-    // A method that is required to be implemented by the BoardGame class. It is not used in this game.
     public boolean takeTurn(int across, int down, String input) {
         setValue(across, down, input);
         return false;
     }
 
+    /**
+     * The function takes in three parameters, two integers and one integer, and returns a boolean
+     * 
+     * @param across the row number of the board
+     * @param down the row of the board
+     * @param input the number that the user wants to place on the board
+     * @return A boolean value.
+     */
     @Override
     public boolean takeTurn(int across, int down, int input) {
         // verify that the move suggested by the user is allowed
@@ -268,8 +287,12 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         }
     }
 
-     @Override
-    // Checking if the game is done and if it is, it is checking who the winner is.
+    /**
+     * If the game is won, return true. If the game is a tie, return true. Otherwise, return false.
+     * 
+     * @return A boolean value.
+     */
+    @Override
     public boolean isDone() {
         if (checkHorizontalWin()) {
             return true;
@@ -390,23 +413,39 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         winnerMessage = messageToSet;
     }
 
+    /**
+     * This function returns the winner message
+     * 
+     * @return The winnerMessage is being returned.
+     */
     @Override
-    // Returning the winner message.
     public String getGameStateMessage() {
         return winnerMessage;
     }
 
-    // wrapper for player.getTurn()
+    /**
+     * This function returns the player's turn as a character (wrapper function)
+     * 
+     * @return The player's turn.
+     */
     public char getPlayerTurn() {
         return player.getNumericalTTTPlayerTurn(player.getTurn()).charAt(0);
     }
-
-    // wrapper for player.updateTurn()
+    
+    /**
+     * This function updates the player's turn (wrapper function)
+     * 
+     * @param currTurn The current turn of the game.
+     */
     public void updatePlayerTurn(char currTurn) {
         player.updateTurn(currTurn);
     }
 
-    // wrapper for getGrid()
+    /**
+     * Return the grid as a NumericalTicTacToeGrid (wrapper function)
+     * 
+     * @return The grid is being returned.
+     */
     protected NumericalTicTacToeGrid getGridWrapper() {
         return (NumericalTicTacToeGrid) getGrid();
     }
@@ -423,6 +462,11 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         exceptionMessage = exMessage;
     }
 
+    /**
+     * This function returns the exception message
+     * 
+     * @return The exception message.
+     */
     public String getExceptionMessage() {
         return exceptionMessage;
     }
@@ -431,6 +475,11 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         exceptionOccured = exValue;
     }
 
+   /**
+    * This function returns the value of the boolean variable exceptionOccured
+    * 
+    * @return The exceptionOccured variable is being returned.
+    */
     public boolean getExceptionValue() {
         return exceptionOccured;
     }

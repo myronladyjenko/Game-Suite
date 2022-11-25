@@ -5,7 +5,7 @@ package boardgame;
  * don't need a modifier in the interface definintion
  */
 public interface Saveable {
-    /* 
+    /** 
      * Object returns a string in the format required for 
      * a text save file for that object 
      */

@@ -11,7 +11,7 @@ public class SavingAndLoadingForGUI {
     public Saveable loadBoardUI(GameUI gameUI, int gameOption) {
         do {
             int optionSelected = JOptionPane.showConfirmDialog(null, "Would you like to load the board?", 
-                                                            "User Choice", JOptionPane.YES_NO_CANCEL_OPTION);
+                                                            "User Choice", JOptionPane.YES_NO_OPTION);
             if (optionSelected == 0) {
                 gameUI.selectLocationOfTheFile(0);
                 if (gameUI.getFilePath() == null) {
@@ -60,7 +60,7 @@ public class SavingAndLoadingForGUI {
     public void saveBoardUI(GameUI gameUI, Saveable gameToSave) { 
         do {
             int optionSelected = JOptionPane.showConfirmDialog(null, "Would you like to save the board?", 
-                                                           "User Choice", JOptionPane.YES_NO_CANCEL_OPTION);
+                                                           "User Choice", JOptionPane.YES_NO_OPTION);
             if (optionSelected == 0) {
                 gameUI.selectLocationOfTheFile(1);
                 if (gameUI.getFilePath() == null) {

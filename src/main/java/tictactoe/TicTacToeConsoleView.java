@@ -30,7 +30,7 @@ public class TicTacToeConsoleView {
     private final int fileNameLoad = 3;
     private final int fileNameSave = 4;
 
-    // Creating a new scanner object and setting the skipMenuOption to false.
+    // Creating a new scanner object, a new array of integers, and setting the skipMenuOption to false.
     public TicTacToeConsoleView() {
         scanner = new Scanner(System.in);
         coordinatesForInputPosition = new int[2];
@@ -216,10 +216,6 @@ public class TicTacToeConsoleView {
         coordinatesForInputPosition[1] = column;
     }
 
-    /**
-     * It asks the user to enter a number from 1 to 9, and if the user enters a number that is not in
-     * that range, it will ask the user to enter a number again
-     */
     private void getUserInput(String promptForUser, int typeOfInput) {
         setIntegerInput(-1);
         setCharacterInput('\0');

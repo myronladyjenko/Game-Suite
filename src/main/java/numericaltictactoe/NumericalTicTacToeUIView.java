@@ -19,6 +19,11 @@ import boardgame.ui.PositionAwareButton;
 import game.GameUI;
 import game.SavingAndLoadingForGUI;
 
+/**
+ * This class is used to create a UI version of Numerical TicTacToe
+ * 
+ * @author Myron Ladyjenko
+ */
 public class NumericalTicTacToeUIView extends JPanel {
 
     private JLabel turnLabel;
@@ -29,6 +34,13 @@ public class NumericalTicTacToeUIView extends JPanel {
     private int playerWhoWon;
     private JMenuBar menuBar;
 
+    /**
+     * This is the constructor for the NumericalTicTacToeUIView class. It is used to create a UI
+    // version of Numerical TicTacToe.
+     * @param wide the width of the grid to be created
+     * @param tall the length of the grid to be created
+     * @param gameFrame the main GameUI
+     */
     public NumericalTicTacToeUIView(int wide, int tall, GameUI gameFrame) {
         super();
         setLayout(new BorderLayout());
@@ -59,10 +71,7 @@ public class NumericalTicTacToeUIView extends JPanel {
         }
     }
 
-    /**
-     * It creates a menu bar with two menus, one for saving games and one for loading games
-     */
-    public void makeMenuForSaving() {
+    private void makeMenuForSaving() {
         menuBar = new JMenuBar();
         menuBar.setLayout(new BorderLayout());
         JMenu menu = new JMenu("File Actions");

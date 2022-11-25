@@ -3,7 +3,7 @@ package boardgame;
 import java.util.Iterator;
 
 /**
- * This class  represents an abstract
+ * This class represents an abstract
  * NxM board game.  
  */
 public abstract class BoardGame {
@@ -26,19 +26,44 @@ public abstract class BoardGame {
         grid.emptyGrid();
     }
 
+    /**
+     * This function sets the grid to the given grid and sets the iterator to the iterator of the given
+     * grid.
+     * 
+     * @param aGrid The grid that the iterator will iterate over.
+     */
     protected void setGrid(Grid aGrid) {
         grid = aGrid;
         iter = grid.iterator();
     }
 
+    /**
+     * This function returns the grid.
+     * 
+     * @return The grid object.
+     */
     protected Grid getGrid() {
         return grid;
     }
 
+    /**
+     * This function sets the value of the cell at the given coordinates to the given input
+     * 
+     * @param across The across number of the cell you want to set.
+     * @param down The row number of the cell you want to set.
+     * @param input The input string to be parsed.
+     */
     protected void setValue(int across, int down, String input) {
         grid.setValue(across,down,input);
     }
 
+    /**
+     * This function sets the value of the cell at the given coordinates to the given value
+     * 
+     * @param across The column number of the cell you want to set.
+     * @param down The row of the cell you want to set.
+     * @param input The value to be set in the grid
+     */
     protected void setValue(int across, int down, int input) {
         grid.setValue(across,down,input);
     }

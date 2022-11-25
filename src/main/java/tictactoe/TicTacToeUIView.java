@@ -34,6 +34,8 @@ public class TicTacToeUIView extends JPanel {
     private int playerWhoWon;
     private JMenuBar menuBar;
 
+    // This is the constructor for the TicTacToeUIView class. It is used to create a UI version of
+    // TicTacToe.
     public TicTacToeUIView(int wide, int tall, GameUI gameFrame) {
         super();
         setLayout(new BorderLayout());
@@ -58,7 +60,8 @@ public class TicTacToeUIView extends JPanel {
     }
 
     /**
-     * It creates a menu bar with two menus, one for saving games and one for loading games
+     * This function creates a menu bar with two menu items, one for saving the game and one for
+     * loading the game
      */
     public void makeMenuForSaving() {
         menuBar = new JMenuBar();
@@ -164,6 +167,10 @@ public class TicTacToeUIView extends JPanel {
         }
     }
 
+    /**
+     * This function resets the values of the board and then sets the text of each button to the value
+     * of the cell in the game
+     */
     protected void startLoadedGame() {
         resetValuesOfTheBoard();
 
@@ -183,6 +190,10 @@ public class TicTacToeUIView extends JPanel {
         }
     }
 
+    /**
+     * This function starts a new game by calling the newGame() function in the game class, and then
+     * updates the turn label and the text on the buttons to reflect the new game
+     */
     protected void startNewGame() {
         game.newGame();
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
@@ -199,7 +210,7 @@ public class TicTacToeUIView extends JPanel {
      * 
      * @param controller The controller object that will be used to control the game.
      */
-    public void setGameController(TicTacToeGame controller) {
+    protected void setGameController(TicTacToeGame controller) {
         this.game = controller;
     }
 
@@ -230,6 +241,11 @@ public class TicTacToeUIView extends JPanel {
         playerWhoWon = player;
     }
 
+    /**
+     * This function returns the player who won the game
+     * 
+     * @return The player who won the game.
+     */
     public int getPlayerWhoWon() {
         return playerWhoWon;
     }

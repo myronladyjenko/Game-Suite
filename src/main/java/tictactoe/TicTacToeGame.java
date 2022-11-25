@@ -140,11 +140,12 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         return false;
     }
 
-    @Override
     /**
-     * Creating a string that represents the board and the player turn
-     * @return String representation of the board
-     */
+     * It returns a string that contains the board's state and the previous player's turn
+     * 
+    * @return The stringBoardForFile is being returned.
+    */
+    @Override
     public String getStringToSave() {
         String stringBoardForFile = "";
         stringBoardForFile = stringBoardForFile + player.getPreviousPlayerTurn(player.getTurn()) + "\n";
@@ -168,11 +169,12 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         return stringBoardForFile;
     }
 
-    @Override
     /**
-     * This method creates a board and fills out the cells based on the string
-     * @param String representation of the board
-     */
+     * It takes a string, checks to see if it's valid, and if it is, it loads it into the game
+     * 
+     * @param toLoad The string to load into the game.
+    */
+    @Override
     public void loadSavedString(String toLoad) {
         if (prepareForLoading(toLoad)) {
             ((TicTacToeGrid) getGrid()).parseStringIntoBoard(toLoad);
@@ -197,13 +199,15 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         return true;
     }
 
-    @Override
     /**
-     * @param across value of the column
-     * @param down value of the row
-     * @param input current player turn
-     * @return true if all the performed checks and operations were succesful
-     */
+     * If the move is allowed, set the value of the board at the given coordinates to the given input.
+     * 
+     * @param across the column number of the move
+     * @param down the row of the board
+     * @param input The character that the user wants to place on the board.
+     * @return A boolean value.
+    */
+    @Override
     public boolean takeTurn(int across, int down, String input) {
         // verify that the move suggested by the user is allowed
         checkBoardMove(across, down);
@@ -227,15 +231,28 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         }
     }
 
+    /**
+     * If the user enters a valid number, set the value of the cell at the given coordinates to that
+     * number.
+     * 
+     * @param across The x coordinate of the cell you want to change
+     * @param down The row of the cell you want to change
+     * @param input The value that the user has inputted.
+     * @return A boolean value.
+     */
     @Override
-    // A method that is required to be implemented by the BoardGame class. It is not used in this game.
     public boolean takeTurn(int across, int down, int input) {
         setValue(across, down, input);
         return false;
     }
 
+    /**
+     * If any of the cells in the diagonal are not empty and all of the cells in the diagonal are the same,
+     * then the game is over
+     * 
+     * @return The method isDone() is returning a boolean value.
+     */
     @Override
-    // Checking if the game is done and if it is, it is checking who the winner is.
     public boolean isDone() {
         for (int i = 1; i <= getHeight(); i++) {
             if (!getCell(i, i).equals(" ") && getCell(1, i).equals(getCell(2, i)) 
@@ -333,8 +350,9 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     /**
-     * The method checks if the game is done and if it is, check who the winner is.
-     * @return -1 if the game hasn't ended. 1 - if X won, 2 - if O won; 0 - if a tie.
+     * If the game is done, return the winner, otherwise return -1
+     * 
+     * @return The winner of the game.
      */
     @Override
     public int getWinner() {
@@ -366,6 +384,11 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         exceptionMessage = exMessage;
     }
 
+    /**
+     * This function returns the exception message
+     * 
+     * @return The exception message.
+     */
     public String getExceptionMessage() {
         return exceptionMessage;
     }
@@ -374,27 +397,48 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         exceptionOccured = exValue;
     }
 
+    /**
+     * This function returns the value of the exceptionOccured variable.
+     * 
+     * @return The exceptionOccured variable is being returned.
+     */
     public boolean getExceptionValue() {
         return exceptionOccured;
     }
 
+    /**
+     * If the game is over, return the winner message
+     * 
+     * @return The winnerMessage is being returned.
+     */
     @Override
-    // Returning the winner message.
     public String getGameStateMessage() {
         return winnerMessage;
     }
 
-    // wrapper for player.getTurn()
+    /**
+     * > This function returns the player's turn
+     * 
+     * @return The player's turn.
+     */
     public char getPlayerTurn() {
         return player.getTurn(); 
     }
 
-    // wrapper for player.updateTurn()
+    /**
+     * This function updates the player's turn
+     * 
+     * @param currTurn The current turn of the game.
+     */
     public void updatePlayerTurn(char currTurn) {
         player.updateTurn(currTurn);
     }
 
-    // wrapper for getGrid()
+    /**
+     * Return the grid as a TicTacToeGrid instead of a Grid.
+     * 
+     * @return The grid object is being returned.
+     */
     protected TicTacToeGrid getGridWrapper() {
         return (TicTacToeGrid) getGrid();
     }

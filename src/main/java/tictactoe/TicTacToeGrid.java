@@ -1,7 +1,8 @@
 package tictactoe;
 
 /**
- * This class is used to control the build the board for the games (from grid)
+ * This class is used to control the build the board for the game
+ * TicTacToe game (from grid)
  * 
  * @author Myron Ladyjenko
  */

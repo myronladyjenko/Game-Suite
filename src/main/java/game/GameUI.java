@@ -20,7 +20,7 @@ import java.awt.Dimension;
 import java.io.File;
 
 /**
- * This class creates the window for playing the games from GUI
+ * This class creates the window (JFrame) for accessing the games from GUI
  * 
  * @author Myron Ladyjenko
  */
@@ -41,7 +41,10 @@ public class GameUI extends JFrame {
     private TicTacToeUIView ticTacToeView;
     private NumericalTicTacToeUIView numericalTicTacToeView;
 
-    // The constructor of the class. It is called when an object of the class is created.
+    /**
+     * Constructor for the main frame
+     * @param gameTitle string to set the title of the frame
+     */
     public GameUI(String gameTitle) {
         super(gameTitle);
         setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
@@ -215,6 +218,10 @@ public class GameUI extends JFrame {
         return button;
     }
 
+    /**
+     * This function is called when the user clicks on the "Tic Tac Toe" button. It creates a new
+     * TicTacToeUIView object and adds it to the gamePanel
+     */
     protected void ticTacToe() {
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
@@ -230,6 +237,9 @@ public class GameUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * This function creates a new NumericalTicTacToeUIView object and adds it to the gamePanel
+     */
     protected void numericalTicTacToe() {
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
@@ -275,6 +285,11 @@ public class GameUI extends JFrame {
         ticTacToeButton = button;
     }
 
+    /**
+     * This function returns the ticTacToeButton.
+     * 
+     * @return The ticTacToeButton is being returned.
+     */
     public JButton getTicTacToeButton() {
         return ticTacToeButton;
     }
@@ -283,6 +298,11 @@ public class GameUI extends JFrame {
         numericalTicTacToeButton = button;
     }
 
+    /**
+     * This function returns the numericalTicTacToeButton.
+     * 
+     * @return The numericalTicTacToeButton is being returned.
+     */
     public JButton getNumericalTicTacToeButton() {
         return numericalTicTacToeButton;
     }

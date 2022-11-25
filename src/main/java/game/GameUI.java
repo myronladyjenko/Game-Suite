@@ -1,18 +1,20 @@
 package game;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import numericaltictactoe.NumericalTicTacToeUIView;
 import tictactoe.TicTacToeUIView;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
@@ -24,12 +26,11 @@ import java.io.File;
  */
 public class GameUI extends JFrame {
 
-    private final int widthOfFrame = 450;
-    private final int lengthOfFrame = 130; 
+    private final int lengthOfFrame = 650; 
+    private final int widthOfFrame = 220; 
 
     private JPanel gamePanel;
     private String fileLocation;
-    private JPanel buttonPanel;
     private JButton buttonToSave;
     private JButton buttonToLoad;
 
@@ -40,7 +41,7 @@ public class GameUI extends JFrame {
     // The constructor of the class. It is called when an object of the class is created.
     public GameUI(String gameTitle) {
         super(gameTitle);
-        setMinimumSize(new Dimension(widthOfFrame, lengthOfFrame));
+        setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -49,18 +50,20 @@ public class GameUI extends JFrame {
         
         gamePanel = new JPanel();
         add(gamePanel, BorderLayout.CENTER);
+
         add(makeButtonPanel(), BorderLayout.PAGE_START);
         add(makePanelForSavingLoadingUserProfile(), BorderLayout.PAGE_END);
         startGame();
     }
 
     private JPanel makePanelForSavingLoadingUserProfile() {
-        buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setPreferredSize(new Dimension(40, 40));
         buttonToSave = new JButton("Save User Profile");
         buttonToLoad = new JButton("Load User Profile");
 
+        buttonPanel.setLayout(new GridLayout(1, 2));
         buttonToSave.addActionListener(new ActionListener() {
-        
             @Override
             public void actionPerformed(ActionEvent e) {
                 saveUserProfile();
@@ -75,7 +78,6 @@ public class GameUI extends JFrame {
         });
 
         buttonToSave.setEnabled(false);
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.add(buttonToSave);
         buttonPanel.add(buttonToLoad);
         buttonPanel.setBackground(Color.red);
@@ -126,6 +128,7 @@ public class GameUI extends JFrame {
      * repaints and revalidates the gamePanel
      */
     public void startGame() {
+        setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
         buttonToSave.setVisible(true);
         buttonToLoad.setVisible(true);
         gamePanel.removeAll();
@@ -133,6 +136,7 @@ public class GameUI extends JFrame {
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -185,8 +189,11 @@ public class GameUI extends JFrame {
             }); */
 
     private JPanel makeButtonPanel() {
-        buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setPreferredSize(new Dimension(40, 40));
+
+        buttonPanel.setLayout(new GridLayout(1, 2));
+
         buttonPanel.add(makeTicTacToeButton());
         buttonPanel.add(makeNumericalTicTacToeButton());
         buttonPanel.setBackground(Color.red);
@@ -209,25 +216,37 @@ public class GameUI extends JFrame {
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
         gamePanel.removeAll();
+        setPreferredSize(new Dimension(650, 650));
         ticTacToeView = new TicTacToeUIView(3,3,this);
         // buttonToSave.setEnabled(true);
         gamePanel.add(ticTacToeView);
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();
+        setLocationRelativeTo(null);
     }
 
     protected void numericalTicTacToe() {
         gamePanel.removeAll();
         gamePanel.add(new NumericalTicTacToeUIView(3, 3, this));
+        setPreferredSize(new Dimension(650, 650));
+
+        
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();
+        setLocationRelativeTo(null);
     }
 
     private JPanel startupMessage() {
         JPanel openMessage = new JPanel();
-        openMessage.add(new JLabel("Welcome to the Myron's Application.\nIt's time to have some fun!"));
+        openMessage.setLayout(new BorderLayout());
+
+        JLabel startText = new JLabel(
+            "<html>Welcome to the Myron's Application. It's time to have some fun!</html>");
+        startText.setPreferredSize(new Dimension(lengthOfFrame - 20, widthOfFrame - 120));
+        startText.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+        openMessage.add(startText, BorderLayout.CENTER);
 
         return openMessage;
     }

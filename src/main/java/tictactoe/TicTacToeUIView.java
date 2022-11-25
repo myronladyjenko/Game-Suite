@@ -91,7 +91,7 @@ public class TicTacToeUIView extends JPanel {
         JPanel panel = new JPanel();
         buttons = new PositionAwareButton[game.getHeight()][game.getWidth()];
         panel.setLayout(new GridLayout(game.getWidth(), game.getHeight()));
-        panel.setPreferredSize(new Dimension(400, 400));
+        panel.setPreferredSize(new Dimension(450, 450));
 
         for (int i = 0; i < wide; i++) {
             for (int j = 0; j < tall; j++) { 
@@ -118,6 +118,8 @@ public class TicTacToeUIView extends JPanel {
                                                 + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
 
             if (playerSelection == JOptionPane.NO_OPTION) {
+                menuBar.setVisible(false);
+                this.removeAll();
                 root.startGame();
             } else {
                 startNewGame();
@@ -162,7 +164,7 @@ public class TicTacToeUIView extends JPanel {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Board hasn't been saved");
+            JOptionPane.showMessageDialog(null, "Invalid input. Board hasn't been saved");
         }
     }
 

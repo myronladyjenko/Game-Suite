@@ -53,7 +53,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
         }
 
         if (countCommas(stringBoard) != 6) {
-            throw new ThrowExceptionWrongBoardFormat("Board has incorrect number of commas or newlines.\n");
+            throw new ThrowExceptionWrongBoardFormat("Board has incorrect number of commas.\n");
         }
 
         if (stringBoard.charAt(0) != 'O' && stringBoard.charAt(0) != 'X') {

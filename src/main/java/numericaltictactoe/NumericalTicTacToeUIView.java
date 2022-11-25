@@ -34,10 +34,14 @@ public class NumericalTicTacToeUIView extends JPanel {
         super();
         setLayout(new BorderLayout());
         root = gameFrame;
+        root.setTitle("Welcome to Numerical TicTacToe Game");
         setGameController(new NumericalTicTacToeGame(3, 3));   
 
+        removeActionListenerFromGameButtons();
         makeMenuForSaving();
         root.setJMenuBar(menuBar);
+
+        root.getNumericalTicTacToeButton().addActionListener(e->saveBoard());
 
         makePlayerOddStart();
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
@@ -87,6 +91,7 @@ public class NumericalTicTacToeUIView extends JPanel {
         saveBoard();
         menuBar.setVisible(false);
         this.removeAll();
+        removeActionListenerFromGameButtons();
         root.startGame();
     }
 
@@ -123,6 +128,7 @@ public class NumericalTicTacToeUIView extends JPanel {
             if (playerSelection == JOptionPane.NO_OPTION) {
                 menuBar.setVisible(false);
                 this.removeAll();
+                removeActionListenerFromGameButtons();
                 root.startGame();
             } else {
                 startNewGame();
@@ -135,52 +141,66 @@ public class NumericalTicTacToeUIView extends JPanel {
         }
     }
 
-    private void loadBoard() {
-        String inputCharacter = JOptionPane.showInputDialog("Would you like to load file? Enter y- 'yes' and n - 'no'");
-
-        if (inputCharacter != null && !inputCharacter.equals("") && inputCharacter.charAt(0) == 'y') {
-            root.selectLocationOfTheFile(0);
-        
-            try {
-                NumericalTicTacToeGame loadedGame = new NumericalTicTacToeGame(3, 3);
-                FileHandling.loadFile(root.getFilePath(), loadedGame);
-
-                if (loadedGame.getExceptionValue()) {
-                    JOptionPane.showMessageDialog(null, loadedGame.getExceptionMessage());
-                } else {
-                    game = loadedGame;
-                    startLoadedGame();
-                }
-            } catch (ThrowExceptionFileActionHasFailed e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            }
-        } else {
-            if (inputCharacter != null && inputCharacter.charAt(0) == 'n') {
-                JOptionPane.showMessageDialog(null, "Board hasn't been loaded");
-            } else {
-                JOptionPane.showMessageDialog(null, "Invalid input. Please try again.");
-            }
+    private void removeActionListenerFromGameButtons() {
+        JButton numericalButton = root.getNumericalTicTacToeButton();
+        if (numericalButton.getActionListeners().length == 2) {
+            numericalButton.removeActionListener(numericalButton.getActionListeners()[0]);
         }
     }
 
-    private void saveBoard() {
-        String inputCharacter = JOptionPane.showInputDialog("Would you like to save? Enter y - 'yes' and n - 'no'"); 
-
-        if (inputCharacter != null && !inputCharacter.equals("") && inputCharacter.charAt(0) == 'y') {
-            root.selectLocationOfTheFile(1);
-        
-            try {
-                FileHandling.saveToFile(root.getFilePath(), game);
-            } catch (ThrowExceptionFileActionHasFailed e) {
-                JOptionPane.showMessageDialog(null, e.getMessage());
-            }
-        } else {
-            if (inputCharacter != null && inputCharacter.charAt(0) == 'n') {
-                JOptionPane.showMessageDialog(null, "Board hasn't been saved");
+    private void loadBoard() {
+        do {
+            int optionSelected = JOptionPane.showConfirmDialog(null, "Would you like to load the board?", 
+                                                           "User Choice", JOptionPane.YES_NO_CANCEL_OPTION);
+            if (optionSelected == 0) {
+                root.selectLocationOfTheFile(0);
+                if (root.getFilePath() == null) {
+                        continue;
+                }
+            
+                try {
+                    NumericalTicTacToeGame loadedGame = new NumericalTicTacToeGame(3, 3);
+                    FileHandling.loadFile(root.getFilePath(), loadedGame);
+                    if (loadedGame.getExceptionValue()) {
+                        JOptionPane.showMessageDialog(null, loadedGame.getExceptionMessage());
+                    } else {
+                        game = loadedGame;
+                        startLoadedGame();
+                        break;
+                    }
+                } catch (ThrowExceptionFileActionHasFailed e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
             } else {
-                JOptionPane.showMessageDialog(null, "Invalid input. Please try again.");
+                JOptionPane.showMessageDialog(null, "Board hasn't been loaded");
+                break;
             }
-        }
+        } while(true);
+    }
+
+    private void saveBoard() {
+        do {
+            int optionSelected = JOptionPane.showConfirmDialog(null, "Would you like to save the board?", 
+                                                    "User Choice", JOptionPane.YES_NO_CANCEL_OPTION);
+
+            if (optionSelected == 0) {
+                root.selectLocationOfTheFile(1);
+            
+                if (root.getFilePath() == null) {
+                    continue;
+                }
+
+                try {
+                    FileHandling.saveToFile(root.getFilePath(), game);
+                    break;
+                } catch (ThrowExceptionFileActionHasFailed e) {
+                    JOptionPane.showMessageDialog(null, e.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Board hasn't been saved");
+                break;
+            }
+        } while(true);
     }
 
     protected void startLoadedGame() {

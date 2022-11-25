@@ -33,7 +33,8 @@ public class GameUI extends JFrame {
     private String fileLocation;
     private JButton buttonToSave;
     private JButton buttonToLoad;
-    private JButton ticTacToeButton;
+    private JButton ticTacToeButton = null;
+    private JButton numericalTicTacToeButton = null;
 
     private Player playerOne;
     private Player playerTwo;
@@ -130,6 +131,9 @@ public class GameUI extends JFrame {
      * repaints and revalidates the gamePanel
      */
     public void startGame() {
+        setTitle("TicTactoe Games");
+        getTicTacToeButton().setEnabled(true);
+        getNumericalTicTacToeButton().setEnabled(true);
         setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
         buttonToSave.setVisible(true);
         buttonToLoad.setVisible(true);
@@ -150,7 +154,7 @@ public class GameUI extends JFrame {
         int userSelectedFile = 0;
         JFileChooser chooseFile = new JFileChooser();
         if (choice == 1) {
-            chooseFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            chooseFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooseFile.setDialogTitle("Please enter a file name");
             userSelectedFile = chooseFile.showSaveDialog(null);
 
@@ -209,10 +213,12 @@ public class GameUI extends JFrame {
     private JButton makeNumericalTicTacToeButton() {
         JButton button = new JButton("Start Numerical TicTacToe game");
         button.addActionListener(e->numericalTicTacToe());
+        setNumericalTicTacToeButton(button);
         return button;
     }
 
     protected void ticTacToe() {
+        getNumericalTicTacToeButton().setEnabled(false);
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
         gamePanel.removeAll();
@@ -228,6 +234,8 @@ public class GameUI extends JFrame {
     }
 
     protected void numericalTicTacToe() {
+        getTicTacToeButton().setEnabled(false);
+
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
         gamePanel.removeAll();
@@ -274,6 +282,14 @@ public class GameUI extends JFrame {
 
     public JButton getTicTacToeButton() {
         return ticTacToeButton;
+    }
+
+    private void setNumericalTicTacToeButton(JButton button) {
+        numericalTicTacToeButton = button;
+    }
+
+    public JButton getNumericalTicTacToeButton() {
+        return numericalTicTacToeButton;
     }
 
     /**

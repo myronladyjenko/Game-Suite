@@ -37,6 +37,7 @@ public class GameUI extends JFrame {
     private Player playerOne;
     private Player playerTwo;
     private TicTacToeUIView ticTacToeView;
+    private NumericalTicTacToeUIView numericalTicTacToeView;
 
     // The constructor of the class. It is called when an object of the class is created.
     public GameUI(String gameTitle) {
@@ -157,17 +158,14 @@ public class GameUI extends JFrame {
                 setFilePath(fileToSave.getAbsolutePath());
             }
         } else if (choice == 0) {
-            System.setProperty("swing.disableFileChooserSpeedFix", "true");
             chooseFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             chooseFile.setDialogTitle("Please choose a file name");
-            chooseFile.setApproveButtonMnemonic('y');
 
             userSelectedFile = chooseFile.showOpenDialog(buttonToLoad);
                     
             if (userSelectedFile == JFileChooser.APPROVE_OPTION) {
                 File fileToLoad = chooseFile.getSelectedFile();
                 setFilePath(fileToLoad.getAbsolutePath());
-                System.out.println(getFilePath());
             }
         }
     }
@@ -216,6 +214,7 @@ public class GameUI extends JFrame {
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
         gamePanel.removeAll();
+
         setPreferredSize(new Dimension(650, 650));
         ticTacToeView = new TicTacToeUIView(3,3,this);
         // buttonToSave.setEnabled(true);
@@ -227,11 +226,14 @@ public class GameUI extends JFrame {
     }
 
     protected void numericalTicTacToe() {
+        buttonToSave.setVisible(false);
+        buttonToLoad.setVisible(false);
         gamePanel.removeAll();
-        gamePanel.add(new NumericalTicTacToeUIView(3, 3, this));
-        setPreferredSize(new Dimension(650, 650));
 
-        
+        setPreferredSize(new Dimension(650, 650));
+        numericalTicTacToeView = new NumericalTicTacToeUIView(3,3,this);
+        // buttonToSave.setEnabled(true);
+        gamePanel.add(numericalTicTacToeView);
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();

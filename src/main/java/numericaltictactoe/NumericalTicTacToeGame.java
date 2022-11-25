@@ -23,7 +23,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         player = new Player("O");
     }
 
-        private void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
+    private void validateBoardFromFile(String stringBoard) throws ThrowExceptionWrongBoardFormat, 
                                                                  ThrowExceptionTheGameHasEnded {
         checkBasicBoardRequirements(stringBoard);
 
@@ -100,7 +100,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     private boolean checkForUnexpectedSymbols(String stringBoard) {
         String sBoard = stringBoard.replaceAll(",", "");
         sBoard = sBoard.replaceAll("\n", "");
-        for (int i = 0; i < sBoard.length(); i++) {
+        for (int i = 1; i < sBoard.length(); i++) {
             if (!Character.isDigit(sBoard.charAt(i))) {
                 return true;
             }
@@ -113,10 +113,10 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         int countTwos = 0;
 
         for (int i = 1; i < sBoard.length(); i++) {
-            if (Integer.valueOf(sBoard.charAt(i)) % 2 == 1) {
+            if (Character.isDigit(sBoard.charAt(i)) && Integer.valueOf(sBoard.charAt(i)) % 2 == 1) {
                 countOnes++;
             }
-            if (Integer.valueOf(sBoard.charAt(i)) % 2 == 0) {
+            if (Character.isDigit(sBoard.charAt(i)) && Integer.valueOf(sBoard.charAt(i)) % 2 == 0) {
                 countTwos++;
             }
         }
@@ -147,7 +147,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     public String getStringToSave() {
         String stringBoardForFile = "";
         stringBoardForFile = stringBoardForFile
-                             + convertPlayerName(player.getPreviousPlayerTurn(player.getTurn())) + "\n";
+                             + player.getNumericalTTTPlayerTurn(player.getPreviousPlayerTurn(player.getTurn())) + "\n";
 
         for (int i = 1; i <= getHeight(); i++) {
             for (int j = 1; j <= getWidth(); j++) {
@@ -191,7 +191,6 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         }
 
         player.updateTurn(toLoad.charAt(0));
-        player.setCurrentTurn(player.getTurn());
         return true;
     }
 
@@ -206,10 +205,28 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     public boolean takeTurn(int across, int down, int input) {
         // verify that the move suggested by the user is allowed
         checkBoardMove(across, down);
+        checkSizeInput(input);
         checkIfCorrectTurn(input);
+        checkIfNumberHasBeenUsed(input);
 
         setValue(across, down, input);
         return true;
+    }
+
+    private void checkIfNumberHasBeenUsed(int inputVal) {
+         for (int i = 1; i <= getHeight(); i++) {
+            for (int j = 1; j <= getWidth(); j++) {
+                if (!getCell(i, j).equals(" ") && Integer.valueOf(getCell(i, j)) == inputVal) {
+                    throw new RuntimeException("Error - Entered valed has already been played");
+                }
+            }
+        }
+    }
+
+    private void checkSizeInput(int inputVal) {
+        if (inputVal < 0 || inputVal > 9) {
+            throw new RuntimeException("Error - Entered input is out of bounds");
+        }
     }
 
     private boolean checkBoardMove(int inputRow, int inputColumn) {
@@ -229,7 +246,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     }
 
     private void validateMove(int inputRow, int inputColumn) {
-        if (!getCell(inputRow, inputColumn).equals("")) {
+        if (!getCell(inputRow, inputColumn).equals(" ")) {
             setAllowedMove(false);
         }
     }
@@ -242,8 +259,10 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     }
 
     private void checkIfCorrectTurn(int input) {
-        if (input % 2 == 0 && convertPlayerName(player.getTurn()).equals("O")) {
-            throw new RuntimeException("It's turn : " + convertPlayerName(player.getTurn()) + ". Please wait");
+        if ((input % 2 == 0 && player.getNumericalTTTPlayerTurn(player.getTurn()).equals("O"))
+            || (input % 2 == 1 && player.getNumericalTTTPlayerTurn(player.getTurn()).equals("E"))) {
+            throw new RuntimeException("It's turn : " + player.getNumericalTTTPlayerTurn(player.getTurn()) 
+                                       + ". Please wait");
         }
     }
 
@@ -276,7 +295,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
                 if ((Integer.valueOf(getCell(1, i)) 
                     + Integer.valueOf(getCell(2, i)) 
                     + Integer.valueOf(getCell(3, i))) == 15) {
-                    setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                    setGameStateMessage("Congratulations to " + player.getNumericalTTTPlayerTurn(player.getTurn()));
                     return true;
                 }
             }
@@ -291,7 +310,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
                 if ((Integer.valueOf(getCell(i, 1)) 
                     + Integer.valueOf(getCell(i, 2)) 
                     + Integer.valueOf(getCell(i, 3))) == 15) {
-                    setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                    setGameStateMessage("Congratulations to " + player.getNumericalTTTPlayerTurn(player.getTurn()));
                     return true;
                 }
             }
@@ -305,7 +324,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
             if ((Integer.valueOf(getCell(1, 1)) 
                 + Integer.valueOf(getCell(2, 2)) 
                 + Integer.valueOf(getCell(3, 3))) == 15) {
-                setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                setGameStateMessage("Congratulations to " + player.getNumericalTTTPlayerTurn(player.getTurn()));
                 return true;
             }
         }
@@ -315,7 +334,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
             if ((Integer.valueOf(getCell(3, 1)) 
                 + Integer.valueOf(getCell(2, 2)) 
                 + Integer.valueOf(getCell(1, 3))) == 15) {
-                setGameStateMessage("Congratulations to " + convertPlayerName(player.getTurn()));
+                setGameStateMessage("Congratulations to " + player.getNumericalTTTPlayerTurn(player.getTurn()));
                 return true;
             }
         }
@@ -344,14 +363,6 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         while (getNextValue() != null) {
             dummyValue = dummyValue + 1;
         }
-    }
-
-    private String convertPlayerName(char currPlayerTurn) {
-        if (currPlayerTurn == 'O') {
-            return "O";
-        }
-
-        return "E";
     }
 
     /**
@@ -383,6 +394,21 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
         return winnerMessage;
     }
 
+    // wrapper for player.getTurn()
+    public char getPlayerTurn() {
+        return player.getNumericalTTTPlayerTurn(player.getTurn()).charAt(0);
+    }
+
+    // wrapper for player.updateTurn()
+    public void updatePlayerTurn(char currTurn) {
+        player.updateTurn(currTurn);
+    }
+
+    // wrapper for getGrid()
+    protected NumericalTicTacToeGrid getGridWrapper() {
+        return (NumericalTicTacToeGrid) getGrid();
+    }
+
     private void setAllowedMove(boolean booleanSetMove) {
         allowedMove = booleanSetMove;
     }
@@ -406,5 +432,4 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     public boolean getExceptionValue() {
         return exceptionOccured;
     }
-    
 }

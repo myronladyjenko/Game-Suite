@@ -19,7 +19,7 @@ public class NumericalTicTacToeGrid extends boardgame.Grid {
         while (row <= getHeight()) {
             if (toParse.charAt(counter) != '\n') {
                 if (toParse.charAt(counter) != ',') {
-                    setValue(row, column, Integer.valueOf(toParse.charAt(counter)));
+                    setValue(row, column, Character.getNumericValue(toParse.charAt(counter)));
                 } else {
                     column++;
                 }

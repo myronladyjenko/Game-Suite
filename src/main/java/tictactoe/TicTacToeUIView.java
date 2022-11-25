@@ -189,6 +189,8 @@ public class TicTacToeUIView extends JPanel {
 
     protected void startNewGame() {
         game.newGame();
+        turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
+
         for (int i = 0; i < game.getHeight(); i++) {
             for (int j=0; j < game.getWidth(); j++) {
                 buttons[i][j].setText(game.getCell(buttons[i][j].getAcross(), buttons[i][j].getDown())); 

@@ -395,7 +395,7 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     }
 
     // wrapper for getGrid()
-    public TicTacToeGrid getGridWrapper() {
+    protected TicTacToeGrid getGridWrapper() {
         return (TicTacToeGrid) getGrid();
     }
 }

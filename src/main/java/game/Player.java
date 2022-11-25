@@ -42,7 +42,7 @@ public class Player implements boardgame.Saveable {
      * @param currTurn current player turn
      */
     public void updateTurn(char currTurn) {
-        if (currTurn == 'X') {
+        if (currTurn == 'X' || currTurn == 'E') {
             playerTurn = 'O';
         } else {
             playerTurn = 'X';
@@ -121,6 +121,13 @@ public class Player implements boardgame.Saveable {
         setWins(playerInfo[1]);
         setLosses(playerInfo[2]);
         setTies(playerInfo[3]);
+    }
+
+    public String getNumericalTTTPlayerTurn(char currTurn) {
+        if (currTurn == 'X') {
+            return "E";
+        }
+        return "O";
     }
 
     /**

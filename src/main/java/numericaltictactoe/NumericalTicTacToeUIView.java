@@ -41,10 +41,11 @@ public class NumericalTicTacToeUIView extends JPanel {
         makeMenuForSaving();
         root.setJMenuBar(menuBar);
 
+        root.getTicTacToeButton().addActionListener(e->saveBoard());
         root.getNumericalTicTacToeButton().addActionListener(e->saveBoard());
 
         makePlayerOddStart();
-        turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
+        turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + " (Odd numbers)\n");
         turnLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
         turnLabel.setForeground(Color.BLUE);
         add(turnLabel, BorderLayout.NORTH);
@@ -136,12 +137,21 @@ public class NumericalTicTacToeUIView extends JPanel {
         } else {
             if (getTurnUpdate()) {
                 game.updatePlayerTurn(game.getPlayerTurn());
-                turnLabel.setText("Turn - " + game.getPlayerTurn() + "\n");
+                if (game.getPlayerTurn() == 'O') {
+                    turnLabel.setText("Turn - " + game.getPlayerTurn() + " (Odd numbers)\n");
+                } else {
+                    turnLabel.setText("Turn - " + game.getPlayerTurn() + " (Even numbers)\n");
+                }
             }
         }
     }
 
     private void removeActionListenerFromGameButtons() {
+        JButton button = root.getTicTacToeButton();
+        if (button.getActionListeners().length == 2) {
+            button.removeActionListener(button.getActionListeners()[0]);
+        }
+
         JButton numericalButton = root.getNumericalTicTacToeButton();
         if (numericalButton.getActionListeners().length == 2) {
             numericalButton.removeActionListener(numericalButton.getActionListeners()[0]);
@@ -211,7 +221,11 @@ public class NumericalTicTacToeUIView extends JPanel {
                 buttons[i][j].setText(game.getCell(buttons[i][j].getAcross(), buttons[i][j].getDown())); 
             }
         }
-        turnLabel.setText("Turn - " + game.getPlayerTurn() + "\n");
+        if (game.getPlayerTurn() == 'O') {
+            turnLabel.setText("Turn - " + game.getPlayerTurn() + " (Odd numbers)\n");
+        } else {
+            turnLabel.setText("Turn - " + game.getPlayerTurn() + " (Even numbers)\n");
+        }
     }
 
     private void resetValuesOfTheBoard() {
@@ -225,7 +239,7 @@ public class NumericalTicTacToeUIView extends JPanel {
     protected void startNewGame() {
         game.newGame();
         makePlayerOddStart();
-        turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
+        turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + " (Odd numbers)\n");
 
         for (int i = 0; i < game.getHeight(); i++) {
             for (int j=0; j < game.getWidth(); j++) {

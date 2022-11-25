@@ -47,6 +47,7 @@ public class TicTacToeUIView extends JPanel {
         root.setJMenuBar(menuBar);
 
         root.getTicTacToeButton().addActionListener(e->saveBoard());
+        root.getNumericalTicTacToeButton().addActionListener(e->saveBoard());
 
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
         turnLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
@@ -143,6 +144,11 @@ public class TicTacToeUIView extends JPanel {
         JButton button = root.getTicTacToeButton();
         if (button.getActionListeners().length == 2) {
             button.removeActionListener(button.getActionListeners()[0]);
+        }
+
+        JButton numericalButton = root.getNumericalTicTacToeButton();
+        if (numericalButton.getActionListeners().length == 2) {
+            numericalButton.removeActionListener(numericalButton.getActionListeners()[0]);
         }
     }
 

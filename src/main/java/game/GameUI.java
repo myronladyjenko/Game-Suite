@@ -132,8 +132,6 @@ public class GameUI extends JFrame {
      */
     public void startGame() {
         setTitle("TicTactoe Games");
-        getTicTacToeButton().setEnabled(true);
-        getNumericalTicTacToeButton().setEnabled(true);
         setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
         buttonToSave.setVisible(true);
         buttonToLoad.setVisible(true);
@@ -218,7 +216,6 @@ public class GameUI extends JFrame {
     }
 
     protected void ticTacToe() {
-        getNumericalTicTacToeButton().setEnabled(false);
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
         gamePanel.removeAll();
@@ -234,8 +231,6 @@ public class GameUI extends JFrame {
     }
 
     protected void numericalTicTacToe() {
-        getTicTacToeButton().setEnabled(false);
-
         buttonToSave.setVisible(false);
         buttonToLoad.setVisible(false);
         gamePanel.removeAll();

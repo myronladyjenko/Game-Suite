@@ -16,9 +16,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import boardgame.ui.PositionAwareButton;
-import game.FileHandling;
 import game.GameUI;
-import game.ThrowExceptionFileActionHasFailed;
+import game.SavingAndLoadingForGUI;
 
 public class NumericalTicTacToeUIView extends JPanel {
 
@@ -158,59 +157,17 @@ public class NumericalTicTacToeUIView extends JPanel {
         }
     }
 
-    private void loadBoard() {
-        do {
-            int optionSelected = JOptionPane.showConfirmDialog(null, "Would you like to load the board?", 
-                                                           "User Choice", JOptionPane.YES_NO_CANCEL_OPTION);
-            if (optionSelected == 0) {
-                root.selectLocationOfTheFile(0);
-                if (root.getFilePath() == null) {
-                        continue;
-                }
-            
-                try {
-                    NumericalTicTacToeGame loadedGame = new NumericalTicTacToeGame(3, 3);
-                    FileHandling.loadFile(root.getFilePath(), loadedGame);
-                    if (loadedGame.getExceptionValue()) {
-                        JOptionPane.showMessageDialog(null, loadedGame.getExceptionMessage());
-                    } else {
-                        game = loadedGame;
-                        startLoadedGame();
-                        break;
-                    }
-                } catch (ThrowExceptionFileActionHasFailed e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage());
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Board hasn't been loaded");
-                break;
-            }
-        } while(true);
+    private void saveBoard() {
+        SavingAndLoadingForGUI saveAndLoad = new SavingAndLoadingForGUI();
+        saveAndLoad.saveBoardUI(root, game);
     }
 
-    private void saveBoard() {
-        do {
-            int optionSelected = JOptionPane.showConfirmDialog(null, "Would you like to save the board?", 
-                                                    "User Choice", JOptionPane.YES_NO_CANCEL_OPTION);
-
-            if (optionSelected == 0) {
-                root.selectLocationOfTheFile(1);
-            
-                if (root.getFilePath() == null) {
-                    continue;
-                }
-
-                try {
-                    FileHandling.saveToFile(root.getFilePath(), game);
-                    break;
-                } catch (ThrowExceptionFileActionHasFailed e) {
-                    JOptionPane.showMessageDialog(null, e.getMessage());
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Board hasn't been saved");
-                break;
-            }
-        } while(true);
+    private void loadBoard() {
+        SavingAndLoadingForGUI saveAndLoad = new SavingAndLoadingForGUI();
+        game = (NumericalTicTacToeGame) saveAndLoad.loadBoardUI(root, 1);
+        if (game != null) {
+            startLoadedGame();
+        }
     }
 
     protected void startLoadedGame() {

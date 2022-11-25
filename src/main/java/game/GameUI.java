@@ -152,7 +152,7 @@ public class GameUI extends JFrame {
         int userSelectedFile = 0;
         JFileChooser chooseFile = new JFileChooser();
         if (choice == 1) {
-            chooseFile.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooseFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             chooseFile.setDialogTitle("Please enter a file name");
             userSelectedFile = chooseFile.showSaveDialog(null);
 

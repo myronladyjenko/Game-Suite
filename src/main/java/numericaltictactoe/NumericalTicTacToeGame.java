@@ -27,6 +27,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
                                                                  ThrowExceptionTheGameHasEnded {
         checkBasicBoardRequirements(stringBoard);
 
+        System.out.println(stringBoard);
         if (checkForUnexpectedSymbols(stringBoard)) {
             throw new ThrowExceptionWrongBoardFormat("The read file contains unexpected characters.\n");
         }
@@ -100,6 +101,7 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     private boolean checkForUnexpectedSymbols(String stringBoard) {
         String sBoard = stringBoard.replaceAll(",", "");
         sBoard = sBoard.replaceAll("\n", "");
+        System.out.println(sBoard);
         for (int i = 1; i < sBoard.length(); i++) {
             if (!Character.isDigit(sBoard.charAt(i))) {
                 return true;

@@ -107,7 +107,7 @@ java -jar build/libs/A3.jar
 ## Limitations
 
 For the TicTacToe game console version, the user is only allowed to save to the assets folder.
-For the player profile file must have the player names as PlayerOne and PlayerTwo.
+For the player profile, the file must have the player names as PlayerOne and PlayerTwo.
 
 ## Author Information
 

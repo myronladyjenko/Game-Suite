@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.nio.file.StandardOpenOption;
 
 import boardgame.ui.PositionAwareButton;
@@ -35,8 +36,9 @@ public class TicTacToeUIView extends JPanel {
     private PositionAwareButton[][] buttons;
     private GameUI root;
     private boolean valueOfTurnUpdate;
-    private int playerWhoWon;
     private JMenuBar menuBar;
+    private JButton ticTacToeButton;
+    private JButton numericalTicTacToeButton;
 
     private Player playerOne;
     private Player playerTwo;
@@ -45,7 +47,6 @@ public class TicTacToeUIView extends JPanel {
     // TicTacToe.
     public TicTacToeUIView(int wide, int tall, GameUI gameFrame) {
         super();
-        setPlayerWhoWon(-1);
         setLayout(new BorderLayout());
         root = gameFrame;
         root.setTitle("Welcome to TicTacToe Game");
@@ -58,11 +59,12 @@ public class TicTacToeUIView extends JPanel {
         makeMenuForSaving();
         root.setJMenuBar(menuBar);
 
-        root.getTicTacToeButton().addActionListener(e->saveBoard());
-        root.getNumericalTicTacToeButton().addActionListener(e->{
-                                                            saveBoard(); 
-                                                            askToSavePlayerStatistics();
-                                                            });
+        ticTacToeButton = root.getTicTacToeButton();
+        ticTacToeButton.addActionListener(e->saveBoard());
+
+        numericalTicTacToeButton = root.getNumericalTicTacToeButton();
+        numericalTicTacToeButton.addActionListener(e->saveBoard());
+        numericalTicTacToeButton.addActionListener(e->askToSavePlayerStatistics());
 
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
         turnLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
@@ -105,9 +107,9 @@ public class TicTacToeUIView extends JPanel {
     private void returnMain() {
         saveBoard();
         askToSavePlayerStatistics();
+        removeActionListenerFromGameButtons();
         menuBar.setVisible(false);
         this.removeAll();
-        removeActionListenerFromGameButtons();
         root.startGame();
     }
 
@@ -143,9 +145,10 @@ public class TicTacToeUIView extends JPanel {
                                                 + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
 
             if (playerSelection == JOptionPane.NO_OPTION) {
+                askToSavePlayerStatistics();
+                removeActionListenerFromGameButtons();
                 menuBar.setVisible(false);
                 this.removeAll();
-                removeActionListenerFromGameButtons();
                 root.startGame();
             } else {
                 startNewGame();
@@ -159,7 +162,7 @@ public class TicTacToeUIView extends JPanel {
     }
 
     private void askToSavePlayerStatistics() {
-         int playerSelection = JOptionPane.showConfirmDialog(null, "\nWould you like to save " 
+         int playerSelection = JOptionPane.showConfirmDialog(null, "Would you like to save " 
                                                             + "player's statistics profiles?", 
                                                             "Player Profile Save", JOptionPane.YES_NO_OPTION);
         if (playerSelection == 0) {
@@ -189,14 +192,18 @@ public class TicTacToeUIView extends JPanel {
     }
 
     private void removeActionListenerFromGameButtons() {
-        JButton button = root.getTicTacToeButton();
-        if (button.getActionListeners().length == 2) {
-            button.removeActionListener(button.getActionListeners()[0]);
+        if (ticTacToeButton != null) {
+            ActionListener[] arrayActionListeners = ticTacToeButton.getActionListeners();
+            for (int i = 0; i < arrayActionListeners.length - 1; i++) {
+                ticTacToeButton.removeActionListener(arrayActionListeners[i]);
+            }
         }
 
-        JButton numericalButton = root.getNumericalTicTacToeButton();
-        if (numericalButton.getActionListeners().length == 2) {
-            numericalButton.removeActionListener(numericalButton.getActionListeners()[0]);
+        if (numericalTicTacToeButton != null) {
+            ActionListener[] arrayActionListeners = numericalTicTacToeButton.getActionListeners();
+            for (int i = 0; i < arrayActionListeners.length - 1; i++) {
+                numericalTicTacToeButton.removeActionListener(arrayActionListeners[i]);
+            }
         }
     }
 
@@ -275,34 +282,45 @@ public class TicTacToeUIView extends JPanel {
         }
     }
 
+    /**
+     * The function is used to load the user profile from a file
+     */
     public void loadUserProfile() {
         root.selectLocationOfTheFile(0);
 
-        if (root.getFilePath() == null) {
-            JOptionPane.showMessageDialog(null, "Please select a correct file.");
-        }
+        do {
+            if (root.getFilePath() == null) {
+                JOptionPane.showMessageDialog(null, "Please select a correct file.");
+                break;
+            }
 
-        try {
-            FileHandling.loadFile(root.getFilePath(), playerOne);
-            FileHandling.loadFile(root.getFilePath(), playerTwo);
-        } catch (ThrowExceptionFileActionHasFailed e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+            try {
+                FileHandling.loadFile(root.getFilePath(), playerOne);
+                FileHandling.loadFile(root.getFilePath(), playerTwo);
+            } catch (ThrowExceptionFileActionHasFailed e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+            break;
+        } while(true);
     }
 
     private void saveUserProfile() {
         root.selectLocationOfTheFile(1);
 
-        if (root.getFilePath() == null) {
-            JOptionPane.showMessageDialog(null, "Please select a correct file.");
-        }
+        do {
+            if (root.getFilePath() == null) {
+                JOptionPane.showMessageDialog(null, "Please select a correct file.");
+                break;
+            }
 
-        try {
-            FileHandling.saveToFile(root.getFilePath(), playerOne, StandardOpenOption.TRUNCATE_EXISTING);
-            FileHandling.saveToFile(root.getFilePath(), playerTwo, StandardOpenOption.APPEND);
-        } catch (ThrowExceptionFileActionHasFailed e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+            try {
+                FileHandling.saveToFile(root.getFilePath(), playerOne, StandardOpenOption.TRUNCATE_EXISTING);
+                FileHandling.saveToFile(root.getFilePath(), playerTwo, StandardOpenOption.APPEND);
+            } catch (ThrowExceptionFileActionHasFailed e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+            break;
+        } while(true);
     }
 
     private void setTurnUpdate(boolean turnUpdateValue) {
@@ -311,18 +329,5 @@ public class TicTacToeUIView extends JPanel {
 
     private boolean getTurnUpdate() {
         return valueOfTurnUpdate;
-    }
-
-    public void setPlayerWhoWon(int player) {
-        playerWhoWon = player;
-    }
-
-    /**
-     * This function returns the player who won the game
-     * 
-     * @return The player who won the game.
-     */
-    public int getPlayerWhoWon() {
-        return playerWhoWon;
     }
 }

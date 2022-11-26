@@ -42,6 +42,7 @@ public class GameUI extends JFrame {
     public GameUI(String gameTitle) {
         super(gameTitle);
         setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
+        setMinimumSize(new Dimension(lengthOfFrame, widthOfFrame));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         
@@ -59,36 +60,6 @@ public class GameUI extends JFrame {
         buttonPanel.setBackground(Color.red);
         return buttonPanel;
     }
-
-    /*
-    private void saveUserProfile() {
-        selectLocationOfTheFile(1);
-
-        if (ticTacToeView.getPlayerWhoWon() == 1) {
-            playerOne.setWins(playerOne.getWins() + 1);
-            playerTwo.setLosses(playerOne.getLosses() + 1);
-        } else if (ticTacToeView.getPlayerWhoWon() == 2) {
-            playerTwo.setWins(playerOne.getWins() + 1);
-            playerOne.setLosses(playerOne.getLosses() + 1);
-        } else if (ticTacToeView.getPlayerWhoWon() == 0) {
-            playerOne.setTies(playerOne.getTies() + 1);
-            playerTwo.setTies(playerTwo.getTies() + 1);
-        }
-
-        if (ticTacToeView.getPlayerWhoWon() != -1) {
-            playerOne.setTotalGames(playerOne.getTotalGames() + 1);
-            playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
-        }
-
-        ticTacToeView.setPlayerWhoWon(-1);
-        try {
-            FileHandling.saveToFile(getFilePath(), playerOne);
-            FileHandling.saveToFile(getFilePath(), playerTwo);
-        } catch (ThrowExceptionFileActionHasFailed e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-    }
- */
 
     /**
      * It removes all the components from the gamePanel, adds a new component to it, and then
@@ -175,7 +146,7 @@ public class GameUI extends JFrame {
         pack();
         setLocationRelativeTo(null);
 
-        int playerSelection = JOptionPane.showConfirmDialog(null, "\nWould you like to load " 
+        int playerSelection = JOptionPane.showConfirmDialog(null, "Would you like to load " 
                                                             + "player's statistics profiles?", 
                                                             "Player Profile Load", JOptionPane.YES_NO_OPTION);
         if (playerSelection == 0) {
@@ -198,6 +169,15 @@ public class GameUI extends JFrame {
         getContentPane().revalidate();
         pack();
         setLocationRelativeTo(null);
+
+        int playerSelection = JOptionPane.showConfirmDialog(null, "Would you like to load " 
+                                                            + "player's statistics profiles?", 
+                                                            "Player Profile Load", JOptionPane.YES_NO_OPTION);
+        if (playerSelection == 0) {
+            numericalTicTacToeView.loadUserProfile();
+        } else {
+            JOptionPane.showMessageDialog(null, "Player's profiles haven't been loaded");
+        }
     }
 
     private JPanel startupMessage() {

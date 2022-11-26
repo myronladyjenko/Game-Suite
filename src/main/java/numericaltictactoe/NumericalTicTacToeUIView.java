@@ -14,10 +14,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.nio.file.StandardOpenOption;
 
 import boardgame.ui.PositionAwareButton;
+import game.FileHandling;
 import game.GameUI;
+import game.Player;
 import game.SavingAndLoadingForGUI;
+import game.ThrowExceptionFileActionHasFailed;
 
 /**
  * This class is used to create a UI version of Numerical TicTacToe
@@ -31,8 +36,12 @@ public class NumericalTicTacToeUIView extends JPanel {
     private PositionAwareButton[][] buttons;
     private GameUI root;
     private boolean valueOfTurnUpdate;
-    private int playerWhoWon;
     private JMenuBar menuBar;
+    private JButton ticTacToeButton;
+    private JButton numericalTicTacToeButton;
+
+    private Player playerOne;
+    private Player playerTwo;
 
     /**
      * This is the constructor for the NumericalTicTacToeUIView class. It is used to create a UI
@@ -46,14 +55,21 @@ public class NumericalTicTacToeUIView extends JPanel {
         setLayout(new BorderLayout());
         root = gameFrame;
         root.setTitle("Welcome to Numerical TicTacToe Game");
-        setGameController(new NumericalTicTacToeGame(3, 3));   
+        setGameController(new NumericalTicTacToeGame(3, 3)); 
+        
+        playerOne = new Player("PlayerOne");
+        playerTwo = new Player("PlayerTwo");
 
         removeActionListenerFromGameButtons();
         makeMenuForSaving();
         root.setJMenuBar(menuBar);
 
-        root.getTicTacToeButton().addActionListener(e->saveBoard());
-        root.getNumericalTicTacToeButton().addActionListener(e->saveBoard());
+        ticTacToeButton = root.getTicTacToeButton();
+        ticTacToeButton.addActionListener(e->saveBoard()); 
+        ticTacToeButton.addActionListener(e->askToSavePlayerStatistics());
+
+        numericalTicTacToeButton = root.getNumericalTicTacToeButton();
+        numericalTicTacToeButton.addActionListener(e->saveBoard());
 
         makePlayerOddStart();
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + " (Odd numbers)\n");
@@ -79,7 +95,10 @@ public class NumericalTicTacToeUIView extends JPanel {
         JMenuItem itemGameSave = new JMenuItem("Save Game");
         JMenuItem itemGameLoad = new JMenuItem("Load Game");
 
-        itemGameSave.addActionListener(e->saveBoard());
+        itemGameSave.addActionListener(e->{
+                                      saveBoard();
+                                      askToSavePlayerStatistics();
+                                      });
         itemGameLoad.addActionListener(e->loadBoard());
 
         menu.add(itemGameSave);
@@ -98,9 +117,10 @@ public class NumericalTicTacToeUIView extends JPanel {
 
     private void returnMain() {
         saveBoard();
+        askToSavePlayerStatistics();
+        removeActionListenerFromGameButtons();
         menuBar.setVisible(false);
         this.removeAll();
-        removeActionListenerFromGameButtons();
         root.startGame();
     }
 
@@ -130,14 +150,16 @@ public class NumericalTicTacToeUIView extends JPanel {
         int playerSelection = 0;
 
         if (game.isDone()) {
-            setPlayerWhoWon(game.getWinner());
+            updatePlayerStats();
+
             playerSelection = JOptionPane.showConfirmDialog(null, game.getGameStateMessage() + "." 
                                                 + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
 
             if (playerSelection == JOptionPane.NO_OPTION) {
+                askToSavePlayerStatistics();
+                removeActionListenerFromGameButtons();
                 menuBar.setVisible(false);
                 this.removeAll();
-                removeActionListenerFromGameButtons();
                 root.startGame();
             } else {
                 startNewGame();
@@ -154,15 +176,38 @@ public class NumericalTicTacToeUIView extends JPanel {
         }
     }
 
+    private void updatePlayerStats() {
+        if (game.getWinner() == 1) {
+            playerOne.setWins(playerOne.getWins() + 1);
+            playerTwo.setLosses(playerTwo.getLosses() + 1);
+            playerOne.setTotalGames(playerOne.getTotalGames() + 1);
+            playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
+        } else if (game.getWinner() == 2) {
+            playerTwo.setWins(playerTwo.getWins() + 1);
+            playerOne.setLosses(playerOne.getLosses() + 1);
+            playerOne.setTotalGames(playerOne.getTotalGames() + 1);
+            playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
+        } else if (game.getWinner() == 0) {
+            playerOne.setTies(playerOne.getTies() + 1);
+            playerTwo.setTies(playerTwo.getTies() + 1);
+            playerOne.setTotalGames(playerOne.getTotalGames() + 1);
+            playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
+        }
+    }
+
     private void removeActionListenerFromGameButtons() {
-        JButton button = root.getTicTacToeButton();
-        if (button.getActionListeners().length == 2) {
-            button.removeActionListener(button.getActionListeners()[0]);
+        if (ticTacToeButton != null) {
+            ActionListener[] arrayActionListeners = ticTacToeButton.getActionListeners();
+            for (int i = 0; i < arrayActionListeners.length - 1; i++) {
+                ticTacToeButton.removeActionListener(arrayActionListeners[i]);
+            }
         }
 
-        JButton numericalButton = root.getNumericalTicTacToeButton();
-        if (numericalButton.getActionListeners().length == 2) {
-            numericalButton.removeActionListener(numericalButton.getActionListeners()[0]);
+        if (numericalTicTacToeButton != null) {
+            ActionListener[] arrayActionListeners = numericalTicTacToeButton.getActionListeners();
+            for (int i = 0; i < arrayActionListeners.length - 1; i++) {
+                numericalTicTacToeButton.removeActionListener(arrayActionListeners[i]);
+            }
         }
     }
 
@@ -251,19 +296,63 @@ public class NumericalTicTacToeUIView extends JPanel {
         } while(true);
     }
 
+    private void askToSavePlayerStatistics() {
+         int playerSelection = JOptionPane.showConfirmDialog(null, "Would you like to save " 
+                                                            + "player's statistics profiles?", 
+                                                            "Player Profile Save", JOptionPane.YES_NO_OPTION);
+        if (playerSelection == 0) {
+            saveUserProfile();
+        } else {
+            JOptionPane.showMessageDialog(null, "Player's profiles haven't been saved");
+        }
+    }
+
+    /**
+     * The function is used to load the user profile from a file
+     */
+    public void loadUserProfile() {
+        root.selectLocationOfTheFile(0);
+
+        do {
+            if (root.getFilePath() == null) {
+                JOptionPane.showMessageDialog(null, "Please select a correct file.");
+                break;
+            }
+
+            try {
+                FileHandling.loadFile(root.getFilePath(), playerOne);
+                FileHandling.loadFile(root.getFilePath(), playerTwo);
+            } catch (ThrowExceptionFileActionHasFailed e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+            break;
+        } while(true);
+    }
+
+    private void saveUserProfile() {
+        root.selectLocationOfTheFile(1);
+
+        do {
+            if (root.getFilePath() == null) {
+                JOptionPane.showMessageDialog(null, "Please select a correct file.");
+                break;
+            }
+
+            try {
+                FileHandling.saveToFile(root.getFilePath(), playerOne, StandardOpenOption.TRUNCATE_EXISTING);
+                FileHandling.saveToFile(root.getFilePath(), playerTwo, StandardOpenOption.APPEND);
+            } catch (ThrowExceptionFileActionHasFailed e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+            break;
+        } while(true);
+    }
+
     private void setTurnUpdate(boolean turnUpdateValue) {
         valueOfTurnUpdate = turnUpdateValue;
     }
 
     private boolean getTurnUpdate() {
         return valueOfTurnUpdate;
-    }
-
-    public void setPlayerWhoWon(int player) {
-        playerWhoWon = player;
-    }
-
-    public int getPlayerWhoWon() {
-        return playerWhoWon;
     }
 }

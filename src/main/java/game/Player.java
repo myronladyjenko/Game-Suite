@@ -99,11 +99,9 @@ public class Player implements boardgame.Saveable {
     public String getStringToSave() {
         String stringBoardForFile = "";
 
-        stringBoardForFile = stringBoardForFile + "Player: " + this.getPlayerName() + "\n";
-        stringBoardForFile = stringBoardForFile + "Total games played: " + this.getTotalGames() + "\n";
-        stringBoardForFile = stringBoardForFile + "              Wins: " + this.getWins() + "\n";
-        stringBoardForFile = stringBoardForFile + "            Losses: " + this.getLosses() + "\n";
-        stringBoardForFile = stringBoardForFile + "              Ties: " + this.getTies() + "\n\n";
+        stringBoardForFile = stringBoardForFile + "PlayerName   W   L   T   TG" + "\n";
+        stringBoardForFile = stringBoardForFile + getPlayerName() + "   " + getWins()
+                             + "   " + getLosses() + "   " + getTies() + "   " + getTotalGames() + "\n";
         return stringBoardForFile;
     }
 
@@ -115,39 +113,27 @@ public class Player implements boardgame.Saveable {
     @Override
     public void loadSavedString(String toLoad) {
         String nameOfPlayer = this.getPlayerName();
-        int[] storeInfoAboutPlayer = new int[4];
-        int counter = 0;
-        int start = 0;
-        int num = 0;
+        int flag = 0;
 
-        String[] parsedList = toLoad.split("\\s+|:|\\n");
+        String[] parsedList = toLoad.split("\n");
         for (String elem: parsedList) {
-            if (elem.equals(nameOfPlayer)) {
-                counter = 4;
+            if (flag == 0) {
+                flag = 1;
+                continue;
+            }
+            String[] playerElem = elem.trim().split("\\s+");
+
+            if (nameOfPlayer.equals(playerElem[0])) {
+                setPlayerName(playerElem[0]);
+                setWins(Integer.valueOf(playerElem[1]));
+                setLosses(Integer.valueOf(playerElem[2]));
+                setTies(Integer.valueOf(playerElem[3]));
+                setTotalGames(Integer.valueOf(playerElem[4]));
+                break;
             } else {
                 continue;
             }
-
-            while (counter > 0) {
-                try {
-                    num = Integer.parseInt(elem);
-                } catch (NumberFormatException e) {
-                    continue;
-                }
-                storeInfoAboutPlayer[start] = num;
-                start++;
-                counter--;
-            }
-            break;
         }
-        fillPlayerFields(storeInfoAboutPlayer);
-    }
-
-    private void fillPlayerFields(int[] playerInfo) {
-        setTotalGames(playerInfo[0]);
-        setWins(playerInfo[1]);
-        setLosses(playerInfo[2]);
-        setTies(playerInfo[3]);
     }
 
     /**

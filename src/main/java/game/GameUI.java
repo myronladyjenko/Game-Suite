@@ -7,8 +7,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import numericaltictactoe.NumericalTicTacToeUIView;
 import tictactoe.TicTacToeUIView;
 
@@ -31,13 +29,9 @@ public class GameUI extends JFrame {
 
     private JPanel gamePanel;
     private String fileLocation;
-    private JButton buttonToSave;
-    private JButton buttonToLoad;
     private JButton ticTacToeButton = null;
     private JButton numericalTicTacToeButton = null;
 
-    private Player playerOne;
-    private Player playerTwo;
     private TicTacToeUIView ticTacToeView;
     private NumericalTicTacToeUIView numericalTicTacToeView;
 
@@ -50,47 +44,23 @@ public class GameUI extends JFrame {
         setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
-        playerOne = new Player("Player One");
-        playerTwo = new Player("Player Two");
         
         gamePanel = new JPanel();
         add(gamePanel, BorderLayout.CENTER);
 
         add(makeButtonPanel(), BorderLayout.PAGE_START);
-        add(makePanelForSavingLoadingUserProfile(), BorderLayout.PAGE_END);
+        add(makePanelForSymmetry(), BorderLayout.PAGE_END);
         startGame();
     }
 
-    private JPanel makePanelForSavingLoadingUserProfile() {
+    private JPanel makePanelForSymmetry() {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setPreferredSize(new Dimension(40, 40));
-        buttonToSave = new JButton("Save User Profile");
-        buttonToLoad = new JButton("Load User Profile");
-
-        buttonPanel.setLayout(new GridLayout(1, 2));
-        buttonToSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                saveUserProfile();
-            }
-        });
-        buttonToLoad.addActionListener(new ActionListener() {
-        
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadUserProfile();
-            }
-        });
-
-        buttonToSave.setEnabled(false);
-        buttonPanel.add(buttonToSave);
-        buttonPanel.add(buttonToLoad);
         buttonPanel.setBackground(Color.red);
-
         return buttonPanel;
     }
 
+    /*
     private void saveUserProfile() {
         selectLocationOfTheFile(1);
 
@@ -118,16 +88,7 @@ public class GameUI extends JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
-
-    private void loadUserProfile() {
-        selectLocationOfTheFile(0);
-        try {
-            FileHandling.loadFile(getFilePath(), playerOne);
-            FileHandling.loadFile(getFilePath(), playerTwo);
-        } catch (ThrowExceptionFileActionHasFailed e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
-    }
+ */
 
     /**
      * It removes all the components from the gamePanel, adds a new component to it, and then
@@ -136,8 +97,6 @@ public class GameUI extends JFrame {
     public void startGame() {
         setTitle("TicTactoe Games");
         setPreferredSize(new Dimension(lengthOfFrame, widthOfFrame));
-        buttonToSave.setVisible(true);
-        buttonToLoad.setVisible(true);
         gamePanel.removeAll();
         gamePanel.add(startupMessage());
         getContentPane().repaint();
@@ -167,7 +126,7 @@ public class GameUI extends JFrame {
             chooseFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             chooseFile.setDialogTitle("Please choose a file name");
 
-            userSelectedFile = chooseFile.showOpenDialog(buttonToLoad);
+            userSelectedFile = chooseFile.showOpenDialog(null);
                     
             if (userSelectedFile == JFileChooser.APPROVE_OPTION) {
                 File fileToLoad = chooseFile.getSelectedFile();
@@ -176,25 +135,9 @@ public class GameUI extends JFrame {
         }
     }
 
-    /*
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    chooseFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-                    chooseFile.setDialogTitle("Please choose a file name");
-                    int userSelectedFile = chooseFile.showOpenDialog(null);
-                    
-                    if (userSelectedFile == JFileChooser.APPROVE_OPTION) {
-                        File fileToLoad = chooseFile.getSelectedFile();
-                        setFilePath(fileToLoad.getAbsolutePath());
-                        System.out.println(getFilePath());
-                    }
-                }  
-            }); */
-
     private JPanel makeButtonPanel() {
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setPreferredSize(new Dimension(40, 40));
+        buttonPanel.setPreferredSize(new Dimension(45, 45));
 
         buttonPanel.setLayout(new GridLayout(1, 2));
 
@@ -223,31 +166,33 @@ public class GameUI extends JFrame {
      * TicTacToeUIView object and adds it to the gamePanel
      */
     protected void ticTacToe() {
-        buttonToSave.setVisible(false);
-        buttonToLoad.setVisible(false);
         gamePanel.removeAll();
-
         setPreferredSize(new Dimension(650, 650));
         ticTacToeView = new TicTacToeUIView(3,3,this);
-        // buttonToSave.setEnabled(true);
         gamePanel.add(ticTacToeView);
         getContentPane().repaint();
         getContentPane().revalidate();
         pack();
         setLocationRelativeTo(null);
+
+        int playerSelection = JOptionPane.showConfirmDialog(null, "\nWould you like to load " 
+                                                            + "player's statistics profiles?", 
+                                                            "Player Profile", JOptionPane.YES_NO_OPTION);
+        if (playerSelection == 0) {
+            ticTacToeView.loadUserProfile();
+        } else {
+            JOptionPane.showMessageDialog(null, "Player's profiles haven't been loaded");
+        }
     }
 
     /**
      * This function creates a new NumericalTicTacToeUIView object and adds it to the gamePanel
      */
     protected void numericalTicTacToe() {
-        buttonToSave.setVisible(false);
-        buttonToLoad.setVisible(false);
         gamePanel.removeAll();
 
         setPreferredSize(new Dimension(650, 650));
         numericalTicTacToeView = new NumericalTicTacToeUIView(3,3,this);
-        // buttonToSave.setEnabled(true);
         gamePanel.add(numericalTicTacToeView);
         getContentPane().repaint();
         getContentPane().revalidate();

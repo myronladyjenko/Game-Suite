@@ -16,8 +16,11 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import boardgame.ui.PositionAwareButton;
+import game.FileHandling;
 import game.GameUI;
+import game.Player;
 import game.SavingAndLoadingForGUI;
+import game.ThrowExceptionFileActionHasFailed;
 
 /**
  * This class is used to create a UI version of TicTacToe
@@ -34,14 +37,21 @@ public class TicTacToeUIView extends JPanel {
     private int playerWhoWon;
     private JMenuBar menuBar;
 
+    private Player playerOne;
+    private Player playerTwo;
+
     // This is the constructor for the TicTacToeUIView class. It is used to create a UI version of
     // TicTacToe.
     public TicTacToeUIView(int wide, int tall, GameUI gameFrame) {
         super();
+        setPlayerWhoWon(-1);
         setLayout(new BorderLayout());
         root = gameFrame;
         root.setTitle("Welcome to TicTacToe Game");
         setGameController(new TicTacToeGame());  
+
+        playerOne = new Player("PlayerOne");
+        playerTwo = new Player("PlayerTwo");
         
         removeActionListenerFromGameButtons();
         makeMenuForSaving();
@@ -122,7 +132,9 @@ public class TicTacToeUIView extends JPanel {
         int playerSelection = 0;
 
         if (game.isDone()) {
-            setPlayerWhoWon(game.getWinner());
+            updatePlayerStats();
+            askToSavePlayerStatistics();
+
             playerSelection = JOptionPane.showConfirmDialog(null, game.getGameStateMessage() + "." 
                                                 + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
 
@@ -139,6 +151,29 @@ public class TicTacToeUIView extends JPanel {
                 game.updatePlayerTurn(game.getPlayerTurn());
                 turnLabel.setText("Turn - " + game.getPlayerTurn() + "\n");
             }
+        }
+    }
+
+    private void askToSavePlayerStatistics() {
+        
+    }
+
+    private void updatePlayerStats() {
+        if (game.getWinner() == 1) {
+            playerOne.setWins(playerOne.getWins() + 1);
+            playerTwo.setLosses(playerTwo.getLosses() + 1);
+            playerOne.setTotalGames(playerOne.getTotalGames() + 1);
+            playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
+        } else if (game.getWinner() == 2) {
+            playerTwo.setWins(playerTwo.getWins() + 1);
+            playerOne.setLosses(playerOne.getLosses() + 1);
+            playerOne.setTotalGames(playerOne.getTotalGames() + 1);
+            playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
+        } else if (game.getWinner() == 0) {
+            playerOne.setTies(playerOne.getTies() + 1);
+            playerTwo.setTies(playerTwo.getTies() + 1);
+            playerOne.setTotalGames(playerOne.getTotalGames() + 1);
+            playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
         }
     }
 
@@ -226,6 +261,21 @@ public class TicTacToeUIView extends JPanel {
             }
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+    }
+
+    public void loadUserProfile() {
+        root.selectLocationOfTheFile(0);
+
+        if (root.getFilePath() == null) {
+            JOptionPane.showMessageDialog(null, "Please select a correct file.");
+        }
+
+        try {
+            FileHandling.loadFile(root.getFilePath(), playerOne);
+            FileHandling.loadFile(root.getFilePath(), playerTwo);
+        } catch (ThrowExceptionFileActionHasFailed e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
 

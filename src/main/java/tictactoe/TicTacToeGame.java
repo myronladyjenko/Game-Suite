@@ -357,12 +357,15 @@ public class TicTacToeGame extends boardgame.BoardGame implements boardgame.Save
     @Override
     public int getWinner() {
         if (isDone()) {
+            if (checkTie()) {
+                return 0;
+            }
+            
             if (getPlayerTurn() == 'X') {
                 return 1;
             } else if (getPlayerTurn() == 'O') {
                 return 2;
             }
-            return 0;
         }
 
         return -1;

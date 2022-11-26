@@ -13,7 +13,7 @@ The Game Suite Application is an application that consists of two games: TicTacT
 
 ## Description
 
-The Game Suite application is an application that consists of tho games: TicTacToe and Numerical TicTacToe. Both of these games are a two-player games. One game is played with 'X' or 'O' and the other one is with numbers between 0 and 9. Note that TicTacToe game can be played both from the GUI and command-line. Both of the games are played until users exit the game, someone wins or there are no possible moves.
+The Game Suite application is an application that consists of tho games: TicTacToe and Numerical TicTacToe. Both of these games are a two-player games. One game is played with 'X' or 'O' and the other one is with numbers between 0 and 9. Note that TicTacToe game can be played both from the GUI and command-line. Both of the games are played until users exit the game, someone wins or there are no possible moves. 
 
 &nbsp;
 
@@ -26,15 +26,35 @@ The Game Suite application is an application that consists of tho games: TicTacT
     Also, players are asked whether they want to turn on autosave (this way the file name is prompted once). Once the user starts the new game or loads the game, the proper player turn is determined and the players can start playing the TicTacToe game. The users are allowed to exit the game and save at any point in time.
 
 2. TicTacToe game GUI version:
-    When the user clikcs on the button: "Start TicTacToe Game", the TicTacToe view with the grid opens up. In that view the user is able to save and load the TicTacToe boards. The two players play until someone wins, the users decide to exit the game or the game is a tie. The user is able to save/load as well as exit the game at any point during the game.
+    When the user clikcs on the button: "Start TicTacToe Game", the TicTacToe view with the grid opens up. In that view the user is able to save and load the TicTacToe boards. The two players play until someone wins, the users decide to exit the game or the game is a tie. The user is able to save/load as well as exit/switch the game at any point during the game.
 
 3. Numerical TicTacToe GUI version:
-    When the user clikcs on the button: "Start Numerical TicTacToe Game", the Numerical TicTacToe view with the grid opens up. In that view the user is able to save and load the Numerical TicTacToe boards. The two players play until someone wins, the users decide to exit the game or the game is a tie. The user is able to save/load as well as exit the game at any point during the game. 
+    When the user clikcs on the button: "Start Numerical TicTacToe Game", the Numerical TicTacToe view with the grid opens up. In that view the user is able to save and load the Numerical TicTacToe boards. The two players play until someone wins, the users decide to exit the game or the game is a tie. The user is able to save/load as well as exit/switch the game at any point during the game. 
 
 &nbsp;
 
+* The Player profile:
+    The player profile is of the following format:
+
+        PlayerName   W   L   T   TG
+        PlayerOne    0   0   0   0
+        PlayerTwo    0   0   0   0
+
+        ... where W - Number of Wins, L - Losses, T - Ties, TG - Total Games.
+
+    The option to load/save players profile is provided to the user everytime the user enter/quits from a game (TicTacToe or Numerical TicTacToe). Note that the profile is not displayed in the GUI (you can view the file that you saved the profile to). For the TicTacToe game, player X - is playerOne and O - playerTwo. For the Numerical TicTacToeGame, player O (player with odd numbers) - playerOne and player E - playerTwo. Each time the game is switched, the player profile resets to 0 unless the file is loaded with previously saved data.
+
+!!! NOTE !!! 
+
+I have provided a sample player profile file in the assets directory. File name is playerProfile.txt
+
+!!! DISCLAIMER !!!
+
+For the saving files, on my system - macOS Version 12.6, the files are greyed out. They are SELECTABLE.
+_____________________________________________________________________________________________________________________________________________
+
 * Main GUI window:
-    The main GUI window contains the buttons to start TicTacToe game and Numerical TictacToe. It also contains the Welcome Message as well as the buttons to save and load the user profiles. The user profile contains information about the player's wins, loses, ties as well as total games.
+    The main GUI window contains the buttons to start TicTacToe game and Numerical TictacToe. It also contains the Welcome Message as well as the buttons to save and load the user profiles. The user profile contains information about the player's wins, loses, ties as well as total games. Note that at any point in the program, the user is allowed to switch any game.
 
 * Overview of the Game Suite: the Game Suite application consists of 5 packages: boardgame, ui, game, tictactoe, and numericaltictactoe. In total, the Game Suite application contains 20 classes, 4 of which are user-defined exception classes. The boardgame package contains general classes about any boardgame (interface, abstract class). The game package contains classes that are used throughout the whole program. This package has classes that control and set up the games. Packages numericaltictactoe and tictactoe contains games specific implementations of the methods specified in the classes of the boardgame package. The Game Suite is structured in a way that utilizes inhertance and polymorphism through abstract classes and interfaces.
 
@@ -86,7 +106,8 @@ java -jar build/libs/A3.jar
 
 ## Limitations
 
-For the TicTacToe game console version, the user is only allowed to save to the assets folder
+For the TicTacToe game console version, the user is only allowed to save to the assets folder.
+For the player profile file must have the player names as PlayerOne and PlayerTwo.
 
 ## Author Information
 

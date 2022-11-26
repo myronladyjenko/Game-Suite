@@ -396,12 +396,15 @@ public class NumericalTicTacToeGame extends boardgame.BoardGame implements board
     @Override
     public int getWinner() {
         if (isDone()) {
+            if (checkTie()) {
+                return 0;
+            }
+
             if (player.getTurn() == 'O') {
                 return 1;
             } else if (player.getTurn() == 'X') {
                 return 2;
             }
-            return 0;
         }
 
         return -1;

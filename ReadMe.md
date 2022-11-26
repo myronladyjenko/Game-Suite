@@ -118,6 +118,15 @@ Phone: +1 (343) 264-3588
 ## Development History
 
 Major development steps:
+* 1.7
+    * This commit includes the addition of the example of player profile file and the changes to ReadMe (added profile section).
+    * See [7b3eff41c1bc6c35f4a09568e4e9628dca093a7e](Added example of playerProfile file)
+* 1.6
+    * This commit includes changes for the saving and loading of the player profile as well as fixed issues with removing actionListeners
+    * See [92be81cadd3ffd1355ccdfb9b4f3fd9a1fc8e34e](Added saving and loading player profile + fixed the issues with switching with games)
+* 1.5
+    * Created structure of the player profile and added proper parsing for saving and loading.
+    * See [18c8a2e698cc1adcd6c27e42ddf77a3196e2f4e9](Added parsing for the player loading + keeping track)
 * 1.4
     * Added javadoc comments to all files in the codebase.
     * See [42b031f2a436e79788cc00c4cf8fc5c81a9efad5](Added Javadoc comments)

@@ -184,7 +184,6 @@ public class TicTacToeUIView extends JPanel {
             playerOne.setTotalGames(playerOne.getTotalGames() + 1);
             playerTwo.setTotalGames(playerTwo.getTotalGames() + 1);
         } else if (game.getWinner() == 0) {
-            System.out.println("HEEHEHEHEHEHEH");
             playerOne.setTies(playerOne.getTies() + 1);
             playerTwo.setTies(playerTwo.getTies() + 1);
             playerOne.setTotalGames(playerOne.getTotalGames() + 1);

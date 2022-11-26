@@ -1,0 +1,3 @@
+PlayerName   W   L   T   TG
+PlayerOne    0   1   1   2
+PlayerTwo    0   0   1   1

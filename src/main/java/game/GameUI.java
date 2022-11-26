@@ -177,7 +177,7 @@ public class GameUI extends JFrame {
 
         int playerSelection = JOptionPane.showConfirmDialog(null, "\nWould you like to load " 
                                                             + "player's statistics profiles?", 
-                                                            "Player Profile", JOptionPane.YES_NO_OPTION);
+                                                            "Player Profile Load", JOptionPane.YES_NO_OPTION);
         if (playerSelection == 0) {
             ticTacToeView.loadUserProfile();
         } else {

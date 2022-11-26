@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.nio.file.StandardOpenOption;
 
 import boardgame.ui.PositionAwareButton;
 import game.FileHandling;
@@ -58,7 +59,10 @@ public class TicTacToeUIView extends JPanel {
         root.setJMenuBar(menuBar);
 
         root.getTicTacToeButton().addActionListener(e->saveBoard());
-        root.getNumericalTicTacToeButton().addActionListener(e->saveBoard());
+        root.getNumericalTicTacToeButton().addActionListener(e->{
+                                                            saveBoard(); 
+                                                            askToSavePlayerStatistics();
+                                                            });
 
         turnLabel = new JLabel("Turn - " + game.getPlayerTurn() + "\n");
         turnLabel.setFont(new Font("Times New Roman", Font.PLAIN, 25));
@@ -100,6 +104,7 @@ public class TicTacToeUIView extends JPanel {
 
     private void returnMain() {
         saveBoard();
+        askToSavePlayerStatistics();
         menuBar.setVisible(false);
         this.removeAll();
         removeActionListenerFromGameButtons();
@@ -133,7 +138,6 @@ public class TicTacToeUIView extends JPanel {
 
         if (game.isDone()) {
             updatePlayerStats();
-            askToSavePlayerStatistics();
 
             playerSelection = JOptionPane.showConfirmDialog(null, game.getGameStateMessage() + "." 
                                                 + "\nWould you like to play again?", null, JOptionPane.YES_NO_OPTION);
@@ -155,7 +159,14 @@ public class TicTacToeUIView extends JPanel {
     }
 
     private void askToSavePlayerStatistics() {
-        
+         int playerSelection = JOptionPane.showConfirmDialog(null, "\nWould you like to save " 
+                                                            + "player's statistics profiles?", 
+                                                            "Player Profile Save", JOptionPane.YES_NO_OPTION);
+        if (playerSelection == 0) {
+            saveUserProfile();
+        } else {
+            JOptionPane.showMessageDialog(null, "Player's profiles haven't been saved");
+        }
     }
 
     private void updatePlayerStats() {
@@ -274,6 +285,21 @@ public class TicTacToeUIView extends JPanel {
         try {
             FileHandling.loadFile(root.getFilePath(), playerOne);
             FileHandling.loadFile(root.getFilePath(), playerTwo);
+        } catch (ThrowExceptionFileActionHasFailed e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+
+    private void saveUserProfile() {
+        root.selectLocationOfTheFile(1);
+
+        if (root.getFilePath() == null) {
+            JOptionPane.showMessageDialog(null, "Please select a correct file.");
+        }
+
+        try {
+            FileHandling.saveToFile(root.getFilePath(), playerOne, StandardOpenOption.TRUNCATE_EXISTING);
+            FileHandling.saveToFile(root.getFilePath(), playerTwo, StandardOpenOption.APPEND);
         } catch (ThrowExceptionFileActionHasFailed e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }

@@ -99,8 +99,10 @@ public class Player implements boardgame.Saveable {
     public String getStringToSave() {
         String stringBoardForFile = "";
 
-        stringBoardForFile = stringBoardForFile + "PlayerName   W   L   T   TG" + "\n";
-        stringBoardForFile = stringBoardForFile + getPlayerName() + "   " + getWins()
+        if (getPlayerName().equals("PlayerOne")) {
+            stringBoardForFile = stringBoardForFile + "PlayerName   W   L   T   TG" + "\n";
+        }
+        stringBoardForFile = stringBoardForFile + getPlayerName() + "    " + getWins()
                              + "   " + getLosses() + "   " + getTies() + "   " + getTotalGames() + "\n";
         return stringBoardForFile;
     }

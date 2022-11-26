@@ -1,5 +1,7 @@
 package game;
 
+import java.nio.file.StandardOpenOption;
+
 import javax.swing.JOptionPane;
 
 import boardgame.Saveable;
@@ -68,7 +70,7 @@ public class SavingAndLoadingForGUI {
                 }
             
                 try {
-                    FileHandling.saveToFile(gameUI.getFilePath(), gameToSave);
+                    FileHandling.saveToFile(gameUI.getFilePath(), gameToSave, StandardOpenOption.WRITE);
                     break;
                 } catch (ThrowExceptionFileActionHasFailed e) {
                     JOptionPane.showMessageDialog(null, e.getMessage());

@@ -1,8 +1,4 @@
 # Game Suite Application
-
-!!! IMPORTANT !!! 
-
-As you can see in the repository for A3 and through commits, I have made changes the boardgame package classes. I only modified the spacing/comments. I have not modified any logic or method signatures. I realized to late, that we are not suppose to touch those classes at all. I apologize for the confusion.
 _____________________________________________________________________________________________________________________________________________
 
 The Game Suite Application is an application that consists of two games: TicTacToe and Number Scramble (Nmerical TicTacToe). Both of the games are played with two players and on the 3 by 3 grid.
@@ -44,13 +40,6 @@ The Game Suite application is an application that consists of tho games: TicTacT
 
     The option to load/save players profile is provided to the user everytime the user enter/quits from a game (TicTacToe or Numerical TicTacToe). Note that the profile is not displayed in the GUI (you can view the file that you saved the profile to). For the TicTacToe game, player X - is playerOne and O - playerTwo. For the Numerical TicTacToeGame, player O (player with odd numbers) - playerOne and player E - playerTwo. Each time the game is switched, the player profile resets to 0 unless the file is loaded with previously saved data.
 
-!!! NOTE !!! 
-
-I have provided a sample player profile file in the assets directory. File name is playerProfile.txt
-
-!!! DISCLAIMER !!!
-
-For the saving files, on my system - macOS Version 12.6, the files are greyed out. They are SELECTABLE.
 _____________________________________________________________________________________________________________________________________________
 
 * Main GUI window:

@@ -75,7 +75,7 @@ gradle run
 * OUTPUT:\
 Task :run\
 To run the GUI version of the game suite:\
-java -jar build/libs/A3.jar\
+java -jar build/libs/Game-Suite.jar\
 
     To run the TextUI version of the TicTacToe game:\
     java -cp build/classes/java/main game.TextUI\
